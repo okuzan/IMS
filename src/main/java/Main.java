@@ -11,14 +11,14 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         new DBConnection("WarehouseDB");
-        Parent root = FXMLLoader.load(getClass().getResource("/views/app.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/views/login.fxml"));
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.setTitle("IMS");
         primaryStage.getIcons().add(new Image("/image/icon.png"));
         primaryStage.setMaximized(false);
-        primaryStage.setMinHeight(500.0);
-        primaryStage.setMinWidth(850.0);
+//        primaryStage.setMinHeight(500.0);
+//        primaryStage.setMinWidth(850.0);
         primaryStage.show();
     }
 

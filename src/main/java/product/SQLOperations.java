@@ -263,6 +263,38 @@ public class SQLOperations {
         }
     }
 
+    public boolean isLoginFree(String login) {
+        try {
+            String sql = "SELECT * FROM users WHERE login = ?";
+            PreparedStatement statement = con.prepareStatement(sql);
+            statement.setString(1, login);
+            ResultSet rs = statement.executeQuery();
+            return !rs.next();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean login(String login, String password) {
+        try {
+            String sql = "SELECT password FROM users WHERE login = ?";
+            PreparedStatement statement = con.prepareStatement(sql);
+            statement.setString(1, login);
+            boolean found = statement.execute();
+            if (!found) System.out.println("NOT FOUND");
+            ResultSet res = statement.getResultSet();
+            if (!res.next()) {
+                System.out.println("ResultSet in empty in Java");
+            } else {
+                return res.getString("password").equals(password);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
+    }
+
     public boolean updateProduct(int id, Integer groupId, String name, String description, String producer, Double
             amount, Double price) {
         try {
@@ -466,9 +498,14 @@ public class SQLOperations {
     public static void main(String[] args) {
         new DBConnection("WarehouseDB");
         SQLOperations sqlMain = new SQLOperations(DBConnection.getConnection());
-        System.out.println(sqlMain.getSum());
-        System.out.println(sqlMain.getCategorySum(1));
-        System.out.println(sqlMain.getCategorySum(2));
+        System.out.println(sqlMain.isLoginFree("qwerty"));
+        System.out.println(sqlMain.isLoginFree("qwerty2"));
+        System.out.println(sqlMain.isLoginFree("login"));
+        System.out.println(sqlMain.isLoginFree("fdsfs"));
+//        System.out.println(sqlMain.login("qwerty", "qwerty2"));
+//        System.out.println(sqlMain.getSum());
+//        System.out.println(sqlMain.getCategorySum(1));
+//        System.out.println(sqlMain.getCategorySum(2));
 //        sqlMain.updateCategory(1, "new meat2", "meat cool");
 //        sqlMain.initialization("WarehouseDB");
 //        sqlMain.insertCategory(new Category("meat", "Only meat here"));
@@ -510,4 +547,6 @@ public class SQLOperations {
             throwables.printStackTrace();
         }
     }
+
+
 }

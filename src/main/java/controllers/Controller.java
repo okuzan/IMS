@@ -114,6 +114,11 @@ public class Controller implements Initializable {
         circleImgUsr.setFill(new ImagePattern(usrImg));
     }
 
+    public void setUsername(String text) {
+        lblUsrName.setText(text);
+        lblUsrNamePopOver.setText(text);
+    }
+
     @FXML
     private void hideSideMenu(ActionEvent event) {
         if (sideMenuToogleBtn.isSelected()) {
@@ -136,6 +141,8 @@ public class Controller implements Initializable {
         acContent.getChildren().clear();
         acContent.getChildren().add(FXMLLoader.load(getClass().getResource("/views/login.fxml")));
         acDashBord.getChildren().clear();
+        acContent.setMaxHeight(400);
+        acContent.setMaxWidth(400);
         acHead.getChildren().clear();
         acHead.setMaxHeight(0.0);
     }
