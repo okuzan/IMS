@@ -1,8 +1,5 @@
 import org.junit.jupiter.api.Test;
-import product.DBConnection;
-import product.Product;
-import product.ProductFilter;
-import product.SQLOperations;
+import product.*;
 
 import java.sql.Connection;
 
@@ -12,7 +9,7 @@ class SQLOperationsTest {
 
     @Test
     void shouldInsertProduct() {
-        new DBConnection("F");
+        new DBConnection("", true);
         Connection con = DBConnection.getConnection();
         SQLOperations sqlMain = new SQLOperations(con);
         int size = sqlMain.getAllProducts().size();
@@ -100,5 +97,16 @@ class SQLOperationsTest {
         assertThat(sqlMain.getProduct(4)).isEqualTo(product4upd);
     }
 
+    @Test
+    void shouldLogin() {
+        Connection con = DBConnection.getConnection();
+        SQLOperations sqlMain = new SQLOperations(con);
+
+        sqlMain.insertUser(new User("loginTest", "passTest"));
+        assertThat(sqlMain.isLoginFree("loginTest")).isEqualTo(false);
+        assertThat(sqlMain.login("loginTest", "passTest")).isEqualTo(true);
+        assertThat(sqlMain.login("loginTest1", "passTest")).isEqualTo(false);
+        assertThat(sqlMain.login("loginTest", "passTest(")).isEqualTo(false);
+    }
 
 }

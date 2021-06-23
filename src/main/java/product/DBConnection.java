@@ -8,9 +8,13 @@ import java.sql.Statement;
 public class DBConnection {
     private static Connection con;
 
-    public DBConnection(String name) {
+    public DBConnection(String name, boolean mock) {
         try {
-            con = DriverManager.getConnection("jdbc:sqlite:" + "src/main/resources/" + "WarehouseDB");
+            if (mock) {
+                con = DriverManager.getConnection("jdbc:sqlite::memory:");
+            } else {
+                con = DriverManager.getConnection("jdbc:sqlite:" + "src/main/resources/" + name);
+            }
             Statement s = con.createStatement();
             s.executeUpdate("PRAGMA foreign_keys = ON;");
         } catch (SQLException throwable) {

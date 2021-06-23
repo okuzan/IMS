@@ -496,7 +496,7 @@ public class SQLOperations {
     }
 
     public static void main(String[] args) {
-        new DBConnection("WarehouseDB");
+//        new DBConnection("WarehouseDB");
         SQLOperations sqlMain = new SQLOperations(DBConnection.getConnection());
         System.out.println(sqlMain.isLoginFree("qwerty"));
         System.out.println(sqlMain.isLoginFree("qwerty2"));
