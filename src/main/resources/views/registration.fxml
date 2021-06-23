@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" stylesheets="@../style/MainStyle.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RegistrationController">
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" stylesheets="@../style/MainStyle.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RegistrationController">
     <children>
       <BorderPane layoutX="242.0" layoutY="94.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <bottom>
@@ -27,13 +34,13 @@
                <children>
                   <AnchorPane maxHeight="296.0" maxWidth="1000.0" minHeight="200.0" minWidth="350.0" prefHeight="296.0" prefWidth="350.0">
                      <children>
-                        <TextField fx:id="usernameField" layoutX="44.0" layoutY="69.0" prefHeight="31.0" prefWidth="270.0" promptText="Enter User Name">
+                        <TextField fx:id="usernameField" layoutX="44.0" layoutY="69.0" prefHeight="31.0" prefWidth="270.0" promptText="username">
                            <tooltip>
                               <Tooltip text="User Name will need to Login" />
                            </tooltip></TextField>
-                        <TextField fx:id="fullName" layoutX="44.0" layoutY="115.0" prefHeight="31.0" prefWidth="270.0" promptText="Enter Full Name" />
-                        <PasswordField fx:id="passField" layoutX="44.0" layoutY="163.0" prefHeight="31.0" prefWidth="269.0" promptText="Type Password" />
-                        <PasswordField fx:id="rePassField" layoutX="44.0" layoutY="210.0" prefHeight="31.0" prefWidth="269.0" promptText="Re-Type Password" />
+                        <TextField fx:id="fullName" layoutX="44.0" layoutY="115.0" prefHeight="31.0" prefWidth="270.0" promptText="full name" />
+                        <PasswordField fx:id="passField" layoutX="44.0" layoutY="163.0" prefHeight="31.0" prefWidth="269.0" promptText="password" />
+                        <PasswordField fx:id="rePassField" layoutX="44.0" layoutY="210.0" prefHeight="31.0" prefWidth="269.0" promptText="password again" />
                         <Button fx:id="btnSignUp" layoutX="123.0" layoutY="261.0" mnemonicParsing="false" onAction="#btnRegister" text="Signup" />
                         <Text layoutX="102.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="SIGN UP">
                            <font>
