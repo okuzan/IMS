@@ -1,6 +1,8 @@
 package https;
 
 import controllers.CategoryController;
+import controllers.LoginController;
+//import jdk.jpackage.internal.Log;
 import product.Category;
 
 import java.io.BufferedReader;
@@ -30,6 +32,10 @@ public class HTTPSClient {
     private CategoryController cc;
     private Integer item;
 
+    // LoginController
+    public LoginController lc;
+    public boolean checkLc = false;
+
     public static void main(String[] args){
         HTTPSClient client = new HTTPSClient();
         client.run();
@@ -54,6 +60,14 @@ public class HTTPSClient {
     public HTTPSClient(int query, Integer item) {
         this.query = query;
         this.item = item;
+        this.run();
+    }
+
+    // LoginController
+    public HTTPSClient(int query, LoginController lc) {
+        this.query = query;
+        this.lc = lc;
+        this.checkLc = false;
         this.run();
     }
 
@@ -97,14 +111,14 @@ public class HTTPSClient {
             SSLSocket sslSocket = (SSLSocket) sslSocketFactory.createSocket(this.host, this.port);
 
             System.out.println("SSL client started");
-            new ClientThread(sslSocket, query, cc, item).start();
+            new ClientThread(sslSocket, query, cc, item, lc, checkLc).start();
         } catch (Exception ex){
             ex.printStackTrace();
         }
     }
 
     // Thread handling the socket to server
-    static class ClientThread extends Thread {
+    class ClientThread extends Thread {
         private SSLSocket sslSocket = null;
 
         // CategoryController
@@ -112,11 +126,17 @@ public class HTTPSClient {
         private CategoryController cc;
         private Integer item;
 
-        ClientThread(SSLSocket sslSocket, int query, CategoryController cc, Integer item){
+        // LoginController
+        private LoginController lc;
+        public boolean checkLc;
+
+        ClientThread(SSLSocket sslSocket, int query, CategoryController cc, Integer item, LoginController lc, boolean checkLc){
             this.sslSocket = sslSocket;
             this.query = query;
             this.cc = cc;
             this.item = item;
+            this.lc = lc;
+            this.checkLc = checkLc;
         }
 
         public void run(){
@@ -145,6 +165,9 @@ public class HTTPSClient {
                 if (this.query == 2) {
                     printWriter.println(item);
                 }
+                if (this.query == 5) {
+                    printWriter.println(lc.usernameField.getText() + "," + lc.passField.getText());
+                }
                 printWriter.println();
                 printWriter.flush();
 
@@ -160,6 +183,18 @@ public class HTTPSClient {
                         String description = line.trim().split(",")[1];
                         String title = line.trim().split(",")[2];
                         cc.table.getItems().add(new Category(id, title, description));
+                    }
+                    if (query == 5) {
+                        if (line.trim().equals("1")) {
+                            //this.checkLc = true;
+                            HTTPSClient.this.checkLc = true;
+                            System.out.println("OKAY");
+                        }
+                        else {
+                            System.out.println("NOT OKAY");
+                            HTTPSClient.this.checkLc = false;
+                            //this.checkLc = false;
+                        }
                     }
                 }
 

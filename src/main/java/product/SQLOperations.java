@@ -279,6 +279,7 @@ public class SQLOperations {
 
     public boolean login(String login, String password) {
         try {
+            System.out.println(login + " " + password);
             String sql = "SELECT password FROM users WHERE login = ?";
             PreparedStatement statement = con.prepareStatement(sql);
             statement.setString(1, login);

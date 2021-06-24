@@ -149,6 +149,17 @@ public class HTTPSServer {
                         line = bufferedReader.readLine();
                         sql.deleteCategory(Integer.parseInt(line));
                     }
+                    if (line.trim().equals("5")) {
+                        line = bufferedReader.readLine();
+                        String usernameField = line.split(",")[0];
+                        String passField = line.split(",")[1];
+                        if (sql.login(usernameField, passField)) {
+                            printWriter.println(1);
+                        }
+                        else {
+                            printWriter.println(0);
+                        }
+                    }
                     if(line.trim().isEmpty()){
                         break;
                     }

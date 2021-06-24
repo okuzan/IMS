@@ -1,5 +1,6 @@
 package controllers;
 
+import https.HTTPSClient;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,13 +25,15 @@ import static controllers.ProductsController.showAlert;
 public class LoginController implements Initializable {
     public TextField usernameField;
     @FXML
-    private PasswordField passField;
-    SQLOperations sql;
+    public PasswordField passField;
 
-    public void btnLogin(ActionEvent actionEvent) {
+    public void btnLogin(ActionEvent actionEvent) throws InterruptedException {
         String pass = passField.getText();
         String login = usernameField.getText();
-        if (sql.login(login, pass)) {
+        HTTPSClient httpsClient = new HTTPSClient(5, this);
+        Thread.sleep(1000);
+        System.out.println(httpsClient.checkLc);
+        if (httpsClient.checkLc) {
             try {
                 FXMLLoader loader = new FXMLLoader();
                 loader.setLocation(getClass().getResource("/views/app.fxml"));
@@ -70,8 +73,6 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Connection con = DBConnection.getConnection();
-        sql = new SQLOperations(con);
 
     }
 
