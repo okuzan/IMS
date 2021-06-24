@@ -142,7 +142,7 @@ AnchorPane{
     -fx-effect: dropshadow(three-pass-box, purple, 10, 0, 0, 0);
 }
 #apMother{
-    -fx-background-image: url("../image/wood1.jpg");
+    /*-fx-background-image: url("../image/wood1.jpg");*/
     -fx-background-repeat: stretch;
     -fx-background-position: center center;
 }
@@ -411,7 +411,7 @@ StoreComboBox{
     -fx-border-color: transparent;
     -fx-font-size: 15px; 
     -fx-padding: 0px;
-    -fx-background-image: url("../icon/refreshOne32.png");
+    -fx-background-image: url("../icon/refreshSmall.png");
 /*    -fx-background-size: cover;
     -fx-background-repeat: stretch;
     -fx-background-position: center center;*/
@@ -421,7 +421,7 @@ StoreComboBox{
     -fx-border-color: transparent;
     -fx-font-size: 15px; 
     -fx-padding: 0px;
-    -fx-background-image: url("../icon/refreshTwo32.png");
+    -fx-background-image: url("../icon/refreshSmall.png");
     -fx-cursor: hand;
 }
 #btnRefresh:pressed{

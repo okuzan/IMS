@@ -21,7 +21,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" fx:id="acMain" onKeyPressed="#acMain" onMouseMoved="#acMainOnMouseMove" prefHeight="593.0" prefWidth="767.0" stylesheets="@../style/Application.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Controller">
+<AnchorPane id="AnchorPane" fx:id="acMain" onKeyPressed="#acMain" prefHeight="593.0" prefWidth="767.0" stylesheets="@../style/Application.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Controller">
    <children>
       <StackPane layoutY="-9.0" prefHeight="593.0" prefWidth="767.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -33,7 +33,7 @@
                            <content>
                               <AnchorPane BorderPane.alignment="CENTER">
                                  <children>
-                                    <Text fill="#cc3535" layoutX="8.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Warehouse">
+                                    <Text fill="WHITE" layoutX="8.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Warehouse">
                                        <font>
                                           <Font name="System Bold Italic" size="21.0" />
                                        </font>
@@ -42,7 +42,7 @@
                                        <graphic>
                                           <ImageView fx:id="imgHomeBtn" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
-                                                <Image url="@../icon/home.png" />
+                                                <Image url="@../icon/home2.png" />
                                              </image>
                                           </ImageView>
                                        </graphic>
@@ -51,38 +51,19 @@
                                        <graphic>
                                           <ImageView fx:id="imgStoreBtn" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
-                                                <Image url="@../icon/stock.png" />
+                                                <Image url="@../icon/store2.png" />
                                              </image>
                                           </ImageView>
                                        </graphic>
                                     </Button>
-                                    <Button fx:id="btnSell" contentDisplay="TOP" layoutY="225.0" mnemonicParsing="false" onAction="#btnSellOnClick" prefHeight="78.0" prefWidth="127.0" text="Sell">
-                                       <graphic>
-                                          <ImageView fx:id="imgSellBtn" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../icon/sell2.png" />
-                                             </image>
-                                          </ImageView>
-                                       </graphic>
-                                    </Button>
-                                    <Button fx:id="btnSettings" contentDisplay="TOP" layoutX="-1.0" layoutY="314.0" mnemonicParsing="false" onAction="#btnSettingsOnClick" prefHeight="78.0" prefWidth="127.0" text="Settings">
-                                       <graphic>
-                                          <ImageView fx:id="imgSettingsBtn" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../icon/settings.png" />
-                                             </image>
-                                          </ImageView>
-                                       </graphic>
-                                    </Button>
-                                    <Button fx:id="btnAbout" contentDisplay="TOP" layoutX="-1.0" layoutY="403.0" mnemonicParsing="false" onAction="#btnAboutOnClick" prefHeight="78.0" prefWidth="127.0" text="About">
+                                    <Button fx:id="btnAbout" contentDisplay="TOP" layoutX="-1.0" layoutY="214.0" mnemonicParsing="false" onAction="#btnAboutOnClick" prefHeight="78.0" prefWidth="127.0" text="About">
                                        <graphic>
                                           <ImageView fx:id="imgAboutBtn" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
-                                                <Image url="@../icon/about.png" />
+                                                <Image url="@../icon/about2.png" />
                                              </image>
                                           </ImageView>
-                                       </graphic>
-                                    </Button>
+                                       </graphic></Button>
                                  </children>
                               </AnchorPane>
                            </content>
@@ -112,7 +93,7 @@
                                        <children>
                                           <AnchorPane prefHeight="48.0" prefWidth="160.0">
                                              <children>
-                                                <MenuButton fx:id="mbtnUsrInfoBox" layoutY="4.0" mnemonicParsing="false" onAction="#mbtnOnClick" prefHeight="36.0" prefWidth="120.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="4.0">
+                                                <MenuButton fx:id="mbtnUsrInfoBox" layoutY="4.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="120.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="4.0">
                                                   <items>
                                                     <MenuItem fx:id="miPopOver" mnemonicParsing="false">
                                                          <graphic>

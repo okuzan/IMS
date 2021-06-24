@@ -13,26 +13,15 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-/**
- * FXML Controller class
- *
- * @author rifat
- */
 public class StockController implements Initializable {
     @FXML
-    private AnchorPane acHeadStore;
-    @FXML
     private StackPane spMainContent;
-    @FXML
-    public BorderPane bpStore;
     @FXML
     private Label lblHeader;
     @FXML
@@ -41,7 +30,6 @@ public class StockController implements Initializable {
     private ToggleButton btnCategory;
 
     @FXML
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         ToggleGroup toggleGroup = new ToggleGroup();
@@ -76,5 +64,4 @@ public class StockController implements Initializable {
         CategoryController controller = loader.getController();
         controller.prepareTable();
     }
-
 }

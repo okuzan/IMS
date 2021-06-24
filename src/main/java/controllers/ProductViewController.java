@@ -24,7 +24,6 @@ public class ProductViewController implements Initializable {
     public TextField producerField;
     public TextArea descArea;
     private Integer itemId;
-//    public ComboBox<String> producerBox;
     public ComboBox<String> categoryBox;
     public Button updateBtn;
     public Button addBtn;

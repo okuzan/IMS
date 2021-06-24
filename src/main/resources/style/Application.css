@@ -11,7 +11,7 @@
     -fx-text-fill: #4E4F52;
     /*    -fx-border-radius: 50px;*/
     /*    -fx-background-radius: 50px;*/
-    -fx-background-color: #282E34;
+    -fx-background-color: #6b789c;
     /*    -fx-font-size: 15px; */
     /*    -fx-padding: 5px 25px;*/
     -fx-font-weight:700;
@@ -39,7 +39,7 @@ MenuButton{
 
     /*    -fx-background-insets: 0;*/
     -fx-padding: 0;
-    -fx-background:#282E34;
+    -fx-background:#6b789c;
 }
 
 .list-view .scroll-bar:horizontal .track,
@@ -120,13 +120,13 @@ MenuButton{
 
 }
 #acHead{
-    -fx-background-color:#282E34;
+    -fx-background-color:#6b789c;
 }
 #acDashBord{
-    -fx-background-color:#282E34;
+    -fx-background-color: #6b789c;
 }
 #mbtnUsrInfoBox{
-    -fx-background-color:#282E34;
+    -fx-background-color:#6b789c;
     -fx-text-fill: white;
 }
 #mbtnUsrInfoBox:hover, #mbtnUsrInfoBox:focused{

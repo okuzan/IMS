@@ -47,10 +47,10 @@
                               <Font size="24.0" />
                            </font>
                         </Text>
-                        <Button fx:id="btnClearUserName" graphicTextGap="0.0" layoutX="279.0" layoutY="72.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="35.0" stylesheets="@../style/btnOnText.css" />
-                        <Button fx:id="btnClearFullName" graphicTextGap="0.0" layoutX="279.0" layoutY="118.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="35.0" stylesheets="@../style/btnOnText.css" />
-                        <Button fx:id="btnClearPass" graphicTextGap="0.0" layoutX="279.0" layoutY="165.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="35.0" stylesheets="@../style/btnOnText.css" />
-                        <Button fx:id="btnClearRePass" graphicTextGap="0.0" layoutX="278.0" layoutY="212.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="35.0" stylesheets="@../style/btnOnText.css" />
+                        <Button fx:id="btnClearUserName" onAction="#clearUsername" graphicTextGap="0.0" layoutX="279.0" layoutY="72.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="35.0" stylesheets="@../style/btnOnText.css" />
+                        <Button fx:id="btnClearFullName" onAction="#clearFullName" graphicTextGap="0.0" layoutX="279.0" layoutY="118.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="35.0" stylesheets="@../style/btnOnText.css" />
+                        <Button fx:id="btnClearPass" onAction="#clearPassword" graphicTextGap="0.0" layoutX="279.0" layoutY="165.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="35.0" stylesheets="@../style/btnOnText.css" />
+                        <Button fx:id="btnClearRePass" onAction="#clearRePassword" graphicTextGap="0.0" layoutX="278.0" layoutY="212.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="35.0" stylesheets="@../style/btnOnText.css" />
                      </children>
                   </AnchorPane>
                </children>
