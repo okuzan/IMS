@@ -1,5 +1,6 @@
 package controllers;
 
+import https.HTTPSClient;
 import product.Category;
 import product.DBConnection;
 import product.SQLOperations;
@@ -38,11 +39,7 @@ public class CategoryController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Connection con = DBConnection.getConnection();
-        sql = new SQLOperations(con);
-        List<Category> categories = sql.showCategories();
-        for (Category category : categories) table.getItems().add(category);
-
+        HTTPSClient httpsClient = new HTTPSClient(1, this);
     }
 
     public void prepareTable() {
@@ -115,7 +112,8 @@ public class CategoryController implements Initializable {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             String item = String.valueOf(table.getSelectionModel().getSelectedItem().getId());
             System.out.println("Category id" + item);
-            sql.deleteCategory(Integer.parseInt(item));
+            //sql.deleteCategory(Integer.parseInt(item));
+            HTTPSClient httpsClient = new HTTPSClient(2, Integer.parseInt(item));
             btnRefreshOnAction(actionEvent);
         }
     }

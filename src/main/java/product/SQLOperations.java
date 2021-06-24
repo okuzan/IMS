@@ -170,6 +170,7 @@ public class SQLOperations {
 
     public boolean deleteCategory(int id) {
         try {
+            System.out.println(id);
             String sql = "DELETE FROM categories WHERE id = ?";
             PreparedStatement statement = con.prepareStatement(sql);
             statement.setInt(1, id);

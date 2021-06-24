@@ -10,7 +10,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        new DBConnection("WarehouseDB", false);
+        //new DBConnection("WarehouseDB", false);
         Parent root = FXMLLoader.load(getClass().getResource("/views/login.fxml"));
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);

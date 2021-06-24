@@ -1,5 +1,8 @@
 package https;
 
+import controllers.CategoryController;
+import product.Category;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -22,24 +25,43 @@ public class HTTPSClient {
     private String host = "127.0.0.1";
     private int port = 9999;
 
-    public static void main(String[] args) {
+    // CategoryController
+    private int query = 0;
+    private CategoryController cc;
+    private Integer item;
+
+    public static void main(String[] args){
         HTTPSClient client = new HTTPSClient();
         client.run();
     }
 
-    HTTPSClient() {
+    HTTPSClient(){
     }
 
-    HTTPSClient(String host, int port) {
+    HTTPSClient(String host, int port){
         this.host = host;
         this.port = port;
     }
 
+    // CategoryController show
+    public HTTPSClient(int query, CategoryController cc) {
+        this.query = query;
+        this.cc = cc;
+        this.run();
+    }
+
+    // CategoryController delete item
+    public HTTPSClient(int query, Integer item) {
+        this.query = query;
+        this.item = item;
+        this.run();
+    }
+
     // Create the and initialize the SSLContext
-    private SSLContext createSSLContext() {
-        try {
+    private SSLContext createSSLContext(){
+        try{
             KeyStore keyStore = KeyStore.getInstance("JKS");
-            keyStore.load(new FileInputStream("mykey.jks"), "password".toCharArray());
+            keyStore.load(new FileInputStream("testkey.jks"),"password".toCharArray());
 
             // Create key manager
             KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
@@ -52,11 +74,11 @@ public class HTTPSClient {
             TrustManager[] tm = trustManagerFactory.getTrustManagers();
 
             // Initialize SSLContext
-            SSLContext sslContext = SSLContext.getInstance("TLSv1");
-            sslContext.init(km, tm, null);
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(km,  tm, null);
 
             return sslContext;
-        } catch (Exception ex) {
+        } catch (Exception ex){
             ex.printStackTrace();
         }
 
@@ -64,9 +86,10 @@ public class HTTPSClient {
     }
 
     // Start to run the server
-    public void run() {
+    public void run(){
         SSLContext sslContext = this.createSSLContext();
-        try {
+
+        try{
             // Create socket factory
             SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
 
@@ -74,8 +97,8 @@ public class HTTPSClient {
             SSLSocket sslSocket = (SSLSocket) sslSocketFactory.createSocket(this.host, this.port);
 
             System.out.println("SSL client started");
-            new ClientThread(sslSocket).start();
-        } catch (Exception ex) {
+            new ClientThread(sslSocket, query, cc, item).start();
+        } catch (Exception ex){
             ex.printStackTrace();
         }
     }
@@ -84,13 +107,22 @@ public class HTTPSClient {
     static class ClientThread extends Thread {
         private SSLSocket sslSocket = null;
 
-        ClientThread(SSLSocket sslSocket) {
+        // CategoryController
+        private int query = 0;
+        private CategoryController cc;
+        private Integer item;
+
+        ClientThread(SSLSocket sslSocket, int query, CategoryController cc, Integer item){
             this.sslSocket = sslSocket;
+            this.query = query;
+            this.cc = cc;
+            this.item = item;
         }
 
-        public void run() {
+        public void run(){
             sslSocket.setEnabledCipherSuites(sslSocket.getSupportedCipherSuites());
-            try {
+
+            try{
                 // Start handshake
                 sslSocket.startHandshake();
 
@@ -98,8 +130,8 @@ public class HTTPSClient {
                 SSLSession sslSession = sslSocket.getSession();
 
                 System.out.println("SSLSession :");
-                System.out.println("\tProtocol : " + sslSession.getProtocol());
-                System.out.println("\tCipher suite : " + sslSession.getCipherSuite());
+                System.out.println("\tProtocol : "+sslSession.getProtocol());
+                System.out.println("\tCipher suite : "+sslSession.getCipherSuite());
 
                 // Start handling application content
                 InputStream inputStream = sslSocket.getInputStream();
@@ -109,16 +141,29 @@ public class HTTPSClient {
                 PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(outputStream));
 
                 // Write data
-                printWriter.println("Hello server");
+                printWriter.println(this.query);
+                if (this.query == 2) {
+                    printWriter.println(item);
+                }
                 printWriter.println();
                 printWriter.flush();
 
-                String line;
-                while ((line = bufferedReader.readLine()) != null) {
-                    System.out.println("Inut : " + line);
-                    if (line.trim().equals("HTTP/1.1 200\r\n")) break;
+                String line = null;
+                while((line = bufferedReader.readLine()) != null){
+                    System.out.println("Input : "+line.trim());
+                    if(line.trim().isEmpty()){
+                        //System.out.println("HERE");
+                        break;
+                    }
+                    if (query == 1) {
+                        Integer id = Integer.parseInt(line.trim().split(",")[0]);
+                        String description = line.trim().split(",")[1];
+                        String title = line.trim().split(",")[2];
+                        cc.table.getItems().add(new Category(id, title, description));
+                    }
                 }
 
+                //System.out.println("here");
                 sslSocket.close();
             } catch (Exception ex) {
                 ex.printStackTrace();

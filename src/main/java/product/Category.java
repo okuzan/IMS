@@ -40,6 +40,12 @@ public class Category {
         this.id = id;
     }
 
+    public String parseCategory() {
+        String str = new String();
+        str += id + "," + description + "," + title;
+        return str;
+    }
+
     @Override
     public String toString() {
         return "Category{" +
