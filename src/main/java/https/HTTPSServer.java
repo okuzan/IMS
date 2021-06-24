@@ -4,6 +4,7 @@ import javafx.scene.control.Alert;
 import product.Category;
 import product.DBConnection;
 import product.SQLOperations;
+import product.User;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -12,6 +13,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
 import java.sql.Connection;
 import java.util.List;
@@ -194,6 +196,22 @@ public class HTTPSServer {
                         String itemTitle = line.trim().split(",")[2];
                         int id = sql.getCategoryId(itemTitle);
                         sql.updateCategory(id, nameCvc, descCvc);
+                    }
+                    if (line.trim().equals("8")) {
+                        line = bufferedReader.readLine();
+                        if (!sql.isLoginFree(line)) {
+                            printWriter.println(0);
+                        }
+                        else {
+                            printWriter.println(1);
+                        }
+                    }
+                    if (line.trim().equals("9")) {
+                        line = bufferedReader.readLine();
+                        String login = line.trim().split(",")[0];
+                        String password = line.trim().split(",")[1];
+                        System.out.println("userInsert: " + login + " " + password);
+                        sql.insertUser(new User(login, password));
                     }
                     if(line.trim().isEmpty()){
                         break;

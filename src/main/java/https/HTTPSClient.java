@@ -4,7 +4,9 @@ import controllers.CategoryController;
 import controllers.CategoryViewController;
 import controllers.LoginController;
 //import jdk.jpackage.internal.Log;
+import controllers.RegistrationController;
 import product.Category;
+import product.User;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -41,6 +43,11 @@ public class HTTPSClient {
     private String nameCvc;
     private String descCvc;
     private String itemTitle;
+
+    // RegistrationController
+    private String loginRc;
+    public boolean checkRc = false;
+    private User userRc;
 
     // LoginController
     public LoginController lc;
@@ -107,6 +114,20 @@ public class HTTPSClient {
         this.run();
     }
 
+    // RegistrationController login (8)
+    public HTTPSClient(int query, String loginRc) {
+        this.query = query;
+        this.loginRc = loginRc;
+        this.run();
+    }
+
+    // RegistrationController insertUser (9)
+    public HTTPSClient(int query, User userRc) {
+        this.query = query;
+        this.userRc = userRc;
+        this.run();
+    }
+
     // LoginController
     public HTTPSClient(int query, LoginController lc) {
         this.query = query;
@@ -156,7 +177,7 @@ public class HTTPSClient {
 
             System.out.println("SSL client started");
             new ClientThread(sslSocket, query, cc, item, lc, checkLc, search, cvc, category, checkCvc, nameCvc, descCvc,
-                    itemTitle).start();
+                    itemTitle, loginRc, userRc).start();
         } catch (Exception ex){
             ex.printStackTrace();
         }
@@ -180,13 +201,17 @@ public class HTTPSClient {
         private String descCvc;
         private String itemTitle;
 
+        // RegistraionController
+        private String loginRc;
+        private User userRc;
+
         // LoginController
         private LoginController lc;
         public boolean checkLc;
 
         ClientThread(SSLSocket sslSocket, int query, CategoryController cc, Integer item, LoginController lc,
                      boolean checkLc, String search, CategoryViewController cvc, Category category, boolean checkCvc,
-                     String nameCvc, String descCvc, String itemTitle){
+                     String nameCvc, String descCvc, String itemTitle, String loginRc, User userRc){
             this.sslSocket = sslSocket;
 
             // CategoryController
@@ -202,6 +227,10 @@ public class HTTPSClient {
             this.nameCvc = nameCvc;
             this.descCvc = descCvc;
             this.itemTitle = itemTitle;
+
+            // RegistrationController
+            this.loginRc = loginRc;
+            this.userRc = userRc;
 
             // LoginController
             this.lc = lc;
@@ -249,6 +278,12 @@ public class HTTPSClient {
                 if (this.query == 7) {
                     printWriter.println(nameCvc + "," + descCvc + "," + itemTitle);
                 }
+                if (this.query == 8) {
+                    printWriter.println(loginRc);
+                }
+                if (this.query == 9) {
+                    printWriter.println(userRc.getLogin() + "," + userRc.getPassword());
+                }
                 printWriter.println();
                 printWriter.flush();
 
@@ -292,6 +327,16 @@ public class HTTPSClient {
                         else {
                             System.out.println("NOT OKAY");
                             HTTPSClient.this.checkCvc = false;
+                        }
+                    }
+                    if (query == 8) {
+                        if (line.trim().equals("1")) {
+                            System.out.println("NORM");
+                            HTTPSClient.this.checkRc = true;
+                        }
+                        else {
+                            System.out.println("NOT NORM");
+                            HTTPSClient.this.checkRc = false;
                         }
                     }
                 }

@@ -1,5 +1,6 @@
 package controllers;
 
+import https.HTTPSClient;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -32,9 +33,8 @@ public class RegistrationController implements Initializable {
     private PasswordField passField;
     @FXML
     private PasswordField rePassField;
-    private SQLOperations sql;
 
-    public void btnRegister(ActionEvent actionEvent) {
+    public void btnRegister(ActionEvent actionEvent) throws InterruptedException {
         String login = usernameField.getText();
         String pass = passField.getText();
         String passSnd = rePassField.getText();
@@ -45,12 +45,14 @@ public class RegistrationController implements Initializable {
             rePassField.setText("");
             return;
         }
-        if (!sql.isLoginFree(login)) {
+        HTTPSClient httpsClient = new HTTPSClient(8, login);
+        Thread.sleep(500);
+        if (!httpsClient.checkRc) {
             showAlert(Alert.AlertType.ERROR, "Wrong input", "Your username is already taken!");
             usernameField.setText("");
             return;
         }
-        sql.insertUser(new User(login, pass));
+        HTTPSClient httpsClient2 = new HTTPSClient(9, new User(login, pass));
         try {
             Stage stage = (Stage) passField.getScene().getWindow();
             stage.close();
@@ -78,9 +80,6 @@ public class RegistrationController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Connection con = DBConnection.getConnection();
-        sql = new SQLOperations(con);
-
     }
 
     public void clearUsername(ActionEvent actionEvent) {
