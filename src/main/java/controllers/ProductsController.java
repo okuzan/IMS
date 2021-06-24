@@ -25,11 +25,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-/**
- * FXML Controller class
- *
- * @author rifat
- */
 public class ProductsController implements Initializable {
     @FXML
     public StackPane spProductContent;
@@ -54,19 +49,6 @@ public class ProductsController implements Initializable {
     private TextField tfSearch;
     @FXML
     private Label totalLabel;
-    @FXML
-    private ComboBox<String> cbSoteViewBrands;
-    @FXML
-    private ComboBox<String> cbSoteViewCatagory;
-    @FXML
-    private ComboBox<String> cbSoteViewRMA;
-    @FXML
-    private Button btnAddNew;
-    @FXML
-    private Button btnUpdate;
-    @FXML
-    private Button btnDelete;
-    @FXML
     private TableColumn<Object, Object> tblClmProductId;
     private TableColumn<Object, Object> tblClmProductName;
     private TableColumn<Object, Object> tblClmProductquantity;
@@ -80,25 +62,13 @@ public class ProductsController implements Initializable {
     private TableColumn<Object, Object> tblClmProductdate;
     private TableColumn<Object, Object> tblClmProductAddBy;
     private TableColumn<Object, Object> tblClmProductdescription;
-    @FXML
-    private MenuItem miSellSelected;
-
-    String suplyerId;
-    String suplyerName;
-    String brandId;
-    String brandName;
-    String catagoryId;
-    String catagoryName;
-    String rmaID;
-    String rmaName;
-
 
     @FXML
     private Button btnRefresh;
     @FXML
     public AnchorPane apCombobox;
 
-    SQLOperations sql;
+    private SQLOperations sql;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -110,6 +80,7 @@ public class ProductsController implements Initializable {
         for (String producer : producers) producerList.getItems().add(producer);
         List<String> categories = sql.getCategory();
         for (String category : categories) categoryList.getItems().add(category);
+        btnRefresh.fire();
     }
 
     @FXML
@@ -234,7 +205,6 @@ public class ProductsController implements Initializable {
                 e.printStackTrace();
             }
         }
-
     }
 
 
@@ -332,6 +302,4 @@ public class ProductsController implements Initializable {
             System.out.println("Noting");
         }
     }
-
-
 }

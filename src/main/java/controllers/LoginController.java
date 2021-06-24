@@ -43,7 +43,7 @@ public class LoginController implements Initializable {
                 adminPanelStage.setMaximized(true);
                 adminPanelStage.setScene(adminPanelScene);
                 adminPanelStage.getIcons().add(new Image("/image/icon.png"));
-                adminPanelStage.setTitle(login);
+                adminPanelStage.setTitle("IMS");
                 adminPanelStage.show();
 
                 Stage stage = (Stage) passField.getScene().getWindow();
@@ -59,13 +59,11 @@ public class LoginController implements Initializable {
     }
 
     public void pfUserNameOnHitEnter(ActionEvent actionEvent) {
+        btnLogin(actionEvent);
     }
 
     public void pfUserPassOnHitEnter(ActionEvent actionEvent) {
-    }
-
-    public void hlCreateAnAccount(ActionEvent actionEvent) {
-
+        btnLogin(actionEvent);
     }
 
     @Override
@@ -75,6 +73,7 @@ public class LoginController implements Initializable {
 
     }
 
+    @FXML
     public void clearUsername(ActionEvent actionEvent) {
         usernameField.setText("");
     }
@@ -94,7 +93,6 @@ public class LoginController implements Initializable {
             Parent parent = loader.getRoot();
             Scene adminPanelScene = new Scene(parent);
             Stage adminPanelStage = new Stage();
-//            adminPanelStage.setMaximized(true);
             adminPanelStage.setScene(adminPanelScene);
             adminPanelStage.getIcons().add(new Image("/image/icon.png"));
             adminPanelStage.show();

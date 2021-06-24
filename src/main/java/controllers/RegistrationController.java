@@ -32,7 +32,7 @@ public class RegistrationController implements Initializable {
     private PasswordField passField;
     @FXML
     private PasswordField rePassField;
-    SQLOperations sql;
+    private SQLOperations sql;
 
     public void btnRegister(ActionEvent actionEvent) {
         String login = usernameField.getText();
@@ -75,15 +75,6 @@ public class RegistrationController implements Initializable {
 
     }
 
-    public void pfUserNameOnHitEnter(ActionEvent actionEvent) {
-    }
-
-    public void pfUserPassOnHitEnter(ActionEvent actionEvent) {
-    }
-
-    public void hlCreateAnAccount(ActionEvent actionEvent) {
-
-    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -123,5 +114,9 @@ public class RegistrationController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void clearFullName(ActionEvent actionEvent) {
+        fullName.clear();
     }
 }

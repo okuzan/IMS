@@ -41,8 +41,8 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="24.800024414062477" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
             </rowConstraints>
-            <Label text="product Name :" GridPane.columnSpan="2" />
-            <Label text="Quantity :" GridPane.rowIndex="8" />
+            <Label text="Name" GridPane.columnSpan="2" />
+            <Label text="Quantity" GridPane.rowIndex="8" />
             <Label text="Price" GridPane.rowIndex="6" />
             <Label text="Description" GridPane.rowIndex="10" />
             <Label text="Producer" GridPane.rowIndex="4" />
