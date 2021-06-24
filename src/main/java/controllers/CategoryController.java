@@ -35,7 +35,6 @@ public class CategoryController implements Initializable {
     public Button btnAdd;
     public Button btnUpdate;
     public Button btnDelete;
-    private SQLOperations sql;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -121,15 +120,12 @@ public class CategoryController implements Initializable {
     public void btnRefreshOnAction(ActionEvent actionEvent) {
         String query = searchField.getText();
         if (!query.trim().isEmpty()) {
-            Category cat = sql.getCategory(query);
             table.getItems().clear();
-            table.getItems().add(cat);
+            HTTPSClient httpsClient = new HTTPSClient(3, this, query);
             searchField.setText("");
         } else {
-            List<Category> list = sql.showCategories();
             table.getItems().clear();
-            for (Category cat : list) table.getItems().add(cat);
-
+            HTTPSClient httpsClient = new HTTPSClient(1, this);
         }
     }
 

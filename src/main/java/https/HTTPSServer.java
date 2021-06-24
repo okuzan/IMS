@@ -1,5 +1,6 @@
 package https;
 
+import javafx.scene.control.Alert;
 import product.Category;
 import product.DBConnection;
 import product.SQLOperations;
@@ -27,6 +28,8 @@ import javax.net.ssl.TrustManagerFactory;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
+
+import static controllers.ProductsController.showAlert;
 
 public class HTTPSServer {
 
@@ -159,6 +162,38 @@ public class HTTPSServer {
                         else {
                             printWriter.println(0);
                         }
+                    }
+                    if (line.trim().equals("3")) {
+                        line = bufferedReader.readLine();
+                        Category cat = sql.getCategory(line);
+                        printWriter.println(cat.parseCategory());
+                    }
+                    if (line.trim().equals("4")) {
+                        line = bufferedReader.readLine();
+                        Category cat = sql.getCategory(line);
+                        printWriter.println(cat.parseCategory());
+                    }
+                    if (line.trim().equals("6")) {
+                        line = bufferedReader.readLine();
+                        Integer id = Integer.parseInt(line.trim().split(",")[0]);
+                        String description = line.trim().split(",")[1];
+                        String title = line.trim().split(",")[2];
+                        Category insCat = new Category(id, title, description);
+                        try {
+                            sql.insertCategory(insCat);
+                            printWriter.println(1);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            printWriter.println(0);
+                        }
+                    }
+                    if (line.trim().equals("7")) {
+                        line = bufferedReader.readLine();
+                        String nameCvc = line.trim().split(",")[0];
+                        String descCvc = line.trim().split(",")[1];
+                        String itemTitle = line.trim().split(",")[2];
+                        int id = sql.getCategoryId(itemTitle);
+                        sql.updateCategory(id, nameCvc, descCvc);
                     }
                     if(line.trim().isEmpty()){
                         break;

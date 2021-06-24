@@ -1,6 +1,7 @@
 package https;
 
 import controllers.CategoryController;
+import controllers.CategoryViewController;
 import controllers.LoginController;
 //import jdk.jpackage.internal.Log;
 import product.Category;
@@ -31,6 +32,15 @@ public class HTTPSClient {
     private int query = 0;
     private CategoryController cc;
     private Integer item;
+    private String search;
+
+    // CategoryViewController
+    private CategoryViewController cvc;
+    public Category category;
+    public boolean checkCvc = false;
+    private String nameCvc;
+    private String descCvc;
+    private String itemTitle;
 
     // LoginController
     public LoginController lc;
@@ -60,6 +70,40 @@ public class HTTPSClient {
     public HTTPSClient(int query, Integer item) {
         this.query = query;
         this.item = item;
+        this.run();
+    }
+
+    // CategoryController getCategory
+    public HTTPSClient(int query, CategoryController cc, String search) {
+        this.query = query;
+        this.item = item;
+        this.search = search;
+        this.run();
+    }
+
+    // CategoryViewController getCategory(4)
+    public HTTPSClient(int query, CategoryViewController cvc, String search) {
+        this.query = query;
+        this.cvc = cvc;
+        this.search = search;
+        this.run();
+    }
+
+    // CategoryViewController insertCategory(6)
+    public HTTPSClient(int query, CategoryViewController cvc, Category category) {
+        this.query = query;
+        this.cvc = cvc;
+        this.category = category;
+        this.run();
+    }
+
+    // CategoryViewController updateCategory(7)
+    public HTTPSClient(int query, CategoryViewController cvc, String nameCvc, String descCvc, String itemTitle) {
+        this.query = query;
+        this.cvc = cvc;
+        this.nameCvc = nameCvc;
+        this.descCvc = descCvc;
+        this.itemTitle = itemTitle;
         this.run();
     }
 
@@ -111,7 +155,8 @@ public class HTTPSClient {
             SSLSocket sslSocket = (SSLSocket) sslSocketFactory.createSocket(this.host, this.port);
 
             System.out.println("SSL client started");
-            new ClientThread(sslSocket, query, cc, item, lc, checkLc).start();
+            new ClientThread(sslSocket, query, cc, item, lc, checkLc, search, cvc, category, checkCvc, nameCvc, descCvc,
+                    itemTitle).start();
         } catch (Exception ex){
             ex.printStackTrace();
         }
@@ -125,16 +170,40 @@ public class HTTPSClient {
         private int query = 0;
         private CategoryController cc;
         private Integer item;
+        private String search;
+
+        // CategoryViewController
+        private CategoryViewController cvc;
+        public Category category;
+        public boolean checkCvc;
+        private String nameCvc;
+        private String descCvc;
+        private String itemTitle;
 
         // LoginController
         private LoginController lc;
         public boolean checkLc;
 
-        ClientThread(SSLSocket sslSocket, int query, CategoryController cc, Integer item, LoginController lc, boolean checkLc){
+        ClientThread(SSLSocket sslSocket, int query, CategoryController cc, Integer item, LoginController lc,
+                     boolean checkLc, String search, CategoryViewController cvc, Category category, boolean checkCvc,
+                     String nameCvc, String descCvc, String itemTitle){
             this.sslSocket = sslSocket;
+
+            // CategoryController
             this.query = query;
             this.cc = cc;
             this.item = item;
+            this.search = search;
+
+            // CategoryViewController
+            this.cvc = cvc;
+            this.category = category;
+            this.checkCvc = checkCvc;
+            this.nameCvc = nameCvc;
+            this.descCvc = descCvc;
+            this.itemTitle = itemTitle;
+
+            // LoginController
             this.lc = lc;
             this.checkLc = checkLc;
         }
@@ -168,6 +237,18 @@ public class HTTPSClient {
                 if (this.query == 5) {
                     printWriter.println(lc.usernameField.getText() + "," + lc.passField.getText());
                 }
+                if (this.query == 3) {
+                    printWriter.println(search);
+                }
+                if (this.query == 4) {
+                    printWriter.println(search);
+                }
+                if (this.query == 6) {
+                    printWriter.println(category.parseCategory());
+                }
+                if (this.query == 7) {
+                    printWriter.println(nameCvc + "," + descCvc + "," + itemTitle);
+                }
                 printWriter.println();
                 printWriter.flush();
 
@@ -178,7 +259,7 @@ public class HTTPSClient {
                         //System.out.println("HERE");
                         break;
                     }
-                    if (query == 1) {
+                    if (query == 1 || query == 3) {
                         Integer id = Integer.parseInt(line.trim().split(",")[0]);
                         String description = line.trim().split(",")[1];
                         String title = line.trim().split(",")[2];
@@ -194,6 +275,23 @@ public class HTTPSClient {
                             System.out.println("NOT OKAY");
                             HTTPSClient.this.checkLc = false;
                             //this.checkLc = false;
+                        }
+                    }
+                    if (query == 4) {
+                        Integer id = Integer.parseInt(line.trim().split(",")[0]);
+                        String description = line.trim().split(",")[1];
+                        String title = line.trim().split(",")[2];
+                        cvc.nameField.setPromptText(title);
+                        cvc.descArea.setPromptText(description);
+                    }
+                    if (query == 6) {
+                        if (line.trim().equals("1")) {
+                            HTTPSClient.this.checkCvc = true;
+                            System.out.println("OKAY");
+                        }
+                        else {
+                            System.out.println("NOT OKAY");
+                            HTTPSClient.this.checkCvc = false;
                         }
                     }
                 }
