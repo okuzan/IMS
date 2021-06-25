@@ -46,7 +46,13 @@ public class OrderController implements Initializable {
 
     public void buyAction(ActionEvent actionEvent) {
         if (!qField.getText().isEmpty()) {
-            double q = Double.parseDouble(qField.getText());
+            double q;
+            try {
+                q = Double.parseDouble(qField.getText());
+            } catch (Exception e) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Wrong data");
+                return;
+            }
             new HTTPSClient(20, this, prodId);
             try {
                 Thread.sleep(50);
@@ -66,7 +72,13 @@ public class OrderController implements Initializable {
 
     public void sellAction(ActionEvent actionEvent) {
         if (!qField.getText().isEmpty()) {
-            double q = Double.parseDouble(qField.getText());
+            double q;
+            try {
+                q = Double.parseDouble(qField.getText());
+            } catch (Exception e) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Wrong data");
+                return;
+            }
             new HTTPSClient(20, this, prodId);
             try {
                 Thread.sleep(100);

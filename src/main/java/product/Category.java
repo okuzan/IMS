@@ -1,6 +1,7 @@
 package product;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Category implements Serializable {
     private String description;
@@ -62,4 +63,13 @@ public class Category implements Serializable {
 
     public String parseCategory() {
         return "" + (id + "," + description + "," + title);
-    }}
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Category category = (Category) o;
+        return Objects.equals(description, category.description) && Objects.equals(title, category.title) && Objects.equals(id, category.id);
+    }
+}

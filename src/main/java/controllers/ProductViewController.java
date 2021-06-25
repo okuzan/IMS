@@ -71,6 +71,11 @@ public class ProductViewController implements Initializable {
 
         categoryId = null;
         new HTTPSClient(14, this, categoryBox.getValue());
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         if (!nameField.getText().isEmpty()) name = nameField.getText();
         if (!categoryBox.getSelectionModel().isEmpty()) category =
@@ -127,11 +132,11 @@ public class ProductViewController implements Initializable {
             price = Double.parseDouble(priceField.getText());
             amount = Double.parseDouble(amountField.getText());
         } catch (NumberFormatException e) {
-            showAlert(Alert.AlertType.ERROR, "Check your data", "Illegal input format!");
+            showAlert(Alert.AlertType.ERROR, "Check your data", "Can't parse numbers!");
             return;
         }
         if (categoryBox.getSelectionModel().isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, "Check your data", "Please elect category!");
+            showAlert(Alert.AlertType.ERROR, "Check your data", "Please select category!");
             return;
         } else {
             new HTTPSClient(14, this, categoryBox.getValue());

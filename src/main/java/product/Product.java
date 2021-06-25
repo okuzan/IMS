@@ -119,11 +119,13 @@ public class Product implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return Double.compare(product.amount, amount) == 0 && Double.compare(product.price, price) == 0 && id.equals(product.id) && name.equals(product.name);
+        if ((product.getName() == null && name != null) || (product.getName() != null && name == null))
+            return false;
+        return Double.compare(product.amount, amount) == 0 && Double.compare(product.price, price) == 0 && id.equals(product.id) && (name.equals(product.name));
     }
 
     public String toFormat() {
-        return id + "," + category + "," +name + "," + description + "," + producer + "," + amount + "," + price;
+        return id + "," + category + "," + name + "," + description + "," + producer + "," + amount + "," + price;
     }
 
     public static Product fromFormat(String str) {

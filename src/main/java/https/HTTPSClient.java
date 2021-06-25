@@ -1,11 +1,14 @@
 package https;
 
 import controllers.*;
+import javafx.scene.control.Alert;
 import product.*;
 
 import javax.net.ssl.*;
 import java.io.*;
 import java.security.KeyStore;
+
+import static controllers.ProductsController.showAlert;
 
 public class HTTPSClient {
 
@@ -473,9 +476,8 @@ public class HTTPSClient {
             new ClientThread(sslSocket, query, cc, item, lc, checkLc, search, cvc, category, checkCvc, nameCvc, descCvc,
                     itemTitle, loginRc, userRc, pc, filter, idToDelete, categoryTitle, pvc, idToGet, updProduct, oc, prodId).start();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "DB", "Couldn't connect to the database!");
+            System.exit(0);
         }
     }
-
-
 }

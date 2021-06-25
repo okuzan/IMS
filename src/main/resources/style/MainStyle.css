@@ -42,7 +42,7 @@
     -fx-border-radius: 50px;
     -fx-background-radius: 50px;
     -fx-background-color: white;
-    -fx-font-size: 12px; 
+    -fx-font-size: 15px;
     -fx-padding: 8px 25px;
     -fx-font-weight:700;
     -fx-font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
@@ -353,6 +353,7 @@ AnchorPane{
 .menu-item {
     -fx-background-color: transparent;
     -fx-padding: 0.666666em 0.999999em 0.4999995em 0.999999em;   /*6 12 6 12 */
+    /*-fx-font-size: 20;*/
 }
  
 .menu-item .label {

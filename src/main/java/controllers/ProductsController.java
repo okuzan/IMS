@@ -2,7 +2,6 @@ package controllers;
 
 import https.HTTPSClient;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -11,7 +10,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
@@ -335,7 +333,6 @@ public class ProductsController implements Initializable {
         alert.showAndWait();
     }
 
-
     @FXML
     private void tblViewCurrentStoreOnScroll(ScrollEvent event) {
         if (event.isInertia()) {
@@ -343,19 +340,5 @@ public class ProductsController implements Initializable {
         } else {
             System.out.println("Noting");
         }
-    }
-
-    public void delete(KeyEvent event) {
-        table.setOnKeyPressed(keyEvent -> {
-            final Product selectedItem = table.getSelectionModel().getSelectedItem();
-
-            if (selectedItem != null) {
-                if (keyEvent.getCode().equals(KeyCode.DELETE)) {
-                    System.out.println("INCREDIBLE@");
-                    ;
-                }
-            }
-        });
-
     }
 }
