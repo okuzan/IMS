@@ -1,5 +1,7 @@
 # Project exclude paths
 /target/
-.idea/
 .idea
 IMS.iml
+pom.xml
+testkey.jks
+mykey.jks
