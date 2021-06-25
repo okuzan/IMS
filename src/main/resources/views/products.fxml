@@ -62,7 +62,7 @@
                         </HBox>
                      </top>
                      <center>
-                        <AnchorPane fx:id="apCombobox" BorderPane.alignment="CENTER">
+                        <AnchorPane onKeyPressed="#delete" fx:id="apCombobox" BorderPane.alignment="CENTER">
                            <children>
                               <HBox alignment="CENTER" prefHeight="100.0" prefWidth="944.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
                                  <children>

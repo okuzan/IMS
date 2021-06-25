@@ -1,23 +1,11 @@
 package https;
 
-import controllers.CategoryController;
-import controllers.CategoryViewController;
-import controllers.LoginController;
-//import jdk.jpackage.internal.Log;
-import controllers.RegistrationController;
 import controllers.*;
-import javafx.scene.control.Alert;
-import product.Category;
-import product.User;
-import product.Product;
-import product.ProductFilter;
-import product.Tools;
+import product.*;
 
 import javax.net.ssl.*;
 import java.io.*;
 import java.security.KeyStore;
-
-import static controllers.ProductsController.showAlert;
 
 public class HTTPSClient {
 
@@ -132,7 +120,7 @@ public class HTTPSClient {
     public HTTPSClient() {
     }
 
-    HTTPSClient(String host, int port){
+    HTTPSClient(String host, int port) {
         this.host = host;
         this.port = port;
     }
@@ -154,7 +142,7 @@ public class HTTPSClient {
     // CategoryController getCategory
     public HTTPSClient(int query, CategoryController cc, String search) {
         this.query = query;
-        this.item = item;
+        this.cc = cc;
         this.search = search;
         this.run();
     }
@@ -220,35 +208,55 @@ public class HTTPSClient {
 
         // CategoryController
         private int query = 0;
-        private CategoryController cc;
-        private Integer item;
-        private String search;
+        private final CategoryController cc;
+        private final Integer item;
+        private final String search;
 
         // CategoryViewController
-        private CategoryViewController cvc;
+        private final CategoryViewController cvc;
         public Category category;
         public boolean checkCvc;
-        private String nameCvc;
-        private String descCvc;
-        private String itemTitle;
+        private final String nameCvc;
+        private final String descCvc;
+        private final String itemTitle;
 
         // RegistraionController
-        private String loginRc;
-        private User userRc;
+        private final String loginRc;
+        private final User userRc;
 
         // LoginController
-        private LoginController lc;
+        private final LoginController lc;
         public boolean checkLc;
 
         //ProductsContoller
-        private ProductsController pc;
+        private final ProductsController pc;
+        private ProductFilter filter;
+        Integer idToDelete;
+        String categoryTitle;
+        ProductViewController pvc;
+        Integer idToGet;
+        Product updProduct;
+        OrderController oc;
+        int prodId;
 
-        ClientThread(SSLSocket sslSocket, int query, CategoryController cc, Integer item, LoginController lc, ProductsController pc, Integer idToDelete, String categoryTitle, ProductViewController pvc, Integer idToGet, Product p, boolean checkLc) {
+        //        ClientThread(SSLSocket sslSocket, int query, CategoryController cc, Integer item, LoginController lc, ProductsController pc, Integer idToDelete, String categoryTitle, ProductViewController pvc, Integer idToGet, Product p, boolean checkLc) {
         ClientThread(SSLSocket sslSocket, int query, CategoryController cc, Integer item, LoginController lc,
                      boolean checkLc, String search, CategoryViewController cvc, Category category, boolean checkCvc,
-                     String nameCvc, String descCvc, String itemTitle, String loginRc, User userRc){
+                     String nameCvc, String descCvc, String itemTitle, String loginRc, User userRc,
+                     ProductsController pc, ProductFilter filter, Integer idToDelete, String categoryTitle, ProductViewController pvc, Integer idToGet, Product updProduct, OrderController oc, int prodId) {
             this.sslSocket = sslSocket;
+
+
             this.pc = pc;
+            this.filter = filter;
+            this.idToDelete = idToDelete;
+            this.categoryTitle = categoryTitle;
+            this.pvc = pvc;
+            this.idToGet = idToGet;
+            this.updProduct = updProduct;
+            this.oc = oc;
+            this.prodId = prodId;
+
 
             // CategoryController
             this.query = query;
@@ -352,6 +360,7 @@ public class HTTPSClient {
                         break;
                     }
                     if (query == 1 || query == 3) {
+                        System.out.println("THAT LINE: " + line);
                         Integer id = Integer.parseInt(line.trim().split(",")[0]);
                         String description = line.trim().split(",")[1];
                         String title = line.trim().split(",")[2];
@@ -393,15 +402,15 @@ public class HTTPSClient {
                         Integer id = Integer.parseInt(line.trim().split(",")[0]);
                         String description = line.trim().split(",")[1];
                         String title = line.trim().split(",")[2];
-                        cvc.nameField.setPromptText(title);
-                        cvc.descArea.setPromptText(description);
+                        cvc.category = new Category(title, description);
+//                        cvc.nameField.setPromptText(title);
+//                        cvc.descArea.setPromptText(description);
                     }
                     if (query == 6) {
                         if (line.trim().equals("1")) {
                             HTTPSClient.this.checkCvc = true;
                             System.out.println("OKAY");
-                        }
-                        else {
+                        } else {
                             System.out.println("NOT OKAY");
                             HTTPSClient.this.checkCvc = false;
                         }
@@ -410,8 +419,7 @@ public class HTTPSClient {
                         if (line.trim().equals("1")) {
                             System.out.println("NORM");
                             HTTPSClient.this.checkRc = true;
-                        }
-                        else {
+                        } else {
                             System.out.println("NOT NORM");
                             HTTPSClient.this.checkRc = false;
                         }
@@ -462,7 +470,8 @@ public class HTTPSClient {
             SSLSocket sslSocket = (SSLSocket) sslSocketFactory.createSocket(this.host, this.port);
 
             System.out.println("SSL client started");
-            new ClientThread(sslSocket, query, cc, item, lc, pc, idToDelete, categoryTitle, pvc, idToGet, updProduct, checkLc).start();
+            new ClientThread(sslSocket, query, cc, item, lc, checkLc, search, cvc, category, checkCvc, nameCvc, descCvc,
+                    itemTitle, loginRc, userRc, pc, filter, idToDelete, categoryTitle, pvc, idToGet, updProduct, oc, prodId).start();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

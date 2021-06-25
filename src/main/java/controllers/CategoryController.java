@@ -1,7 +1,9 @@
 package controllers;
 
 import https.HTTPSClient;
+import javafx.scene.input.KeyCode;
 import product.Category;
+import product.Product;
 import product.SQLOperations;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -36,7 +38,12 @@ public class CategoryController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        HTTPSClient httpsClient = new HTTPSClient(1, this);
+        new HTTPSClient(1, this);
+        table.setOnKeyPressed(keyEvent -> {
+            if (table.getSelectionModel().getSelectedItem() != null)
+                if (keyEvent.getCode().equals(KeyCode.DELETE)) btnDeleteOnAction(new ActionEvent());
+        });
+
     }
 
     public void prepareTable() {
@@ -110,7 +117,7 @@ public class CategoryController implements Initializable {
             String item = String.valueOf(table.getSelectionModel().getSelectedItem().getId());
             System.out.println("Category id" + item);
             //sql.deleteCategory(Integer.parseInt(item));
-            HTTPSClient httpsClient = new HTTPSClient(2, Integer.parseInt(item));
+            new HTTPSClient(2, Integer.parseInt(item));
             btnRefreshOnAction(actionEvent);
         }
     }
@@ -119,14 +126,18 @@ public class CategoryController implements Initializable {
         String query = searchField.getText();
         if (!query.trim().isEmpty()) {
             table.getItems().clear();
-            HTTPSClient httpsClient = new HTTPSClient(3, this, query);
+            new HTTPSClient(3, this, query);
             searchField.setText("");
         } else {
             table.getItems().clear();
-            HTTPSClient httpsClient = new HTTPSClient(1, this);
+            new HTTPSClient(1, this);
         }
     }
 
     public void searchType(KeyEvent keyEvent) {
+    }
+
+    public void onEnter(ActionEvent actionEvent) {
+        btnRefreshOnAction(actionEvent);
     }
 }

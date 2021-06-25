@@ -59,4 +59,7 @@ public class Category implements Serializable {
                 ", id=" + id +
                 '}';
     }
-}
+
+    public String parseCategory() {
+        return "" + (id + "," + description + "," + title);
+    }}

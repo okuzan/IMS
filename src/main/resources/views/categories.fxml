@@ -39,7 +39,7 @@
          <top>
             <HBox alignment="CENTER" prefHeight="63.0" prefWidth="729.0" BorderPane.alignment="CENTER">
                <children>
-                  <TextField fx:id="searchField" onKeyReleased="#searchType" prefHeight="31.0" prefWidth="586.0" promptText="Search Category" />
+                  <TextField fx:id="searchField" onAction="#onEnter" onKeyReleased="#searchType" prefHeight="31.0" prefWidth="586.0" promptText="Search Category" />
                   <Button fx:id="btnRefresh" mnemonicParsing="false" onAction="#btnRefreshOnAction" prefHeight="30.0" prefWidth="33.0" />
                </children>
             </HBox>

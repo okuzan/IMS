@@ -1,11 +1,8 @@
 package controllers;
 
 import https.HTTPSClient;
-import product.Product;
-import product.DBConnection;
-import product.SQLOperations;
-import product.ProductFilter;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -13,15 +10,19 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import product.Product;
+import product.ProductFilter;
+import product.SQLOperations;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -87,13 +88,17 @@ public class ProductsController implements Initializable {
 //        List<String> categories = sql.getCategories();
 //        for (String category : categories) categoryList.getItems().add(category);
         new HTTPSClient(11, this);
-//        btnRefresh.fire();
+        table.setOnKeyPressed(keyEvent -> {
+            if (table.getSelectionModel().getSelectedItem() != null)
+                if (keyEvent.getCode().equals(KeyCode.DELETE)) btnDeleteOnAction(new ActionEvent());
+        });
     }
 
     @FXML
     public void onEnter(ActionEvent ae) throws InterruptedException {
         table.getItems().clear();
         String input = tfSearch.getText();
+        tfSearch.clear();
         ProductFilter filter = new ProductFilter(null, input, null, null, null, null, null);
 //        List<Product> products = sql.getByCriteria(filter);
 //        for (Product product : products) table.getItems().add(product);
@@ -101,6 +106,8 @@ public class ProductsController implements Initializable {
         new HTTPSClient(15, this, filter);
         Thread.sleep(100);
         for (Product product : filteredProducts) table.getItems().add(product);
+        double cost = calculateCost(filteredProducts);
+        totalLabel.setText("Total: " + cost);
     }
 
     @FXML
@@ -297,7 +304,8 @@ public class ProductsController implements Initializable {
 
 //        List<Product> products = sql.getByCriteria(filter);
     }
-    private void reloadTable(){
+
+    private void reloadTable() {
         table.getItems().clear();
         filteredProducts.clear();
         new HTTPSClient(15, this);
@@ -311,6 +319,7 @@ public class ProductsController implements Initializable {
         totalLabel.setText("Total: " + cost);
 
     }
+
     private double calculateCost(List<Product> products) {
         double sum = 0.;
         for (Product product : products) sum += (product.getAmount() * product.getPrice());
@@ -334,5 +343,19 @@ public class ProductsController implements Initializable {
         } else {
             System.out.println("Noting");
         }
+    }
+
+    public void delete(KeyEvent event) {
+        table.setOnKeyPressed(keyEvent -> {
+            final Product selectedItem = table.getSelectionModel().getSelectedItem();
+
+            if (selectedItem != null) {
+                if (keyEvent.getCode().equals(KeyCode.DELETE)) {
+                    System.out.println("INCREDIBLE@");
+                    ;
+                }
+            }
+        });
+
     }
 }

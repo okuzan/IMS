@@ -129,8 +129,8 @@ public class HTTPSServer {
                 SSLSession sslSession = sslSocket.getSession();
 
                 System.out.println("SSLSession :");
-                System.out.println("\tProtocol : "+sslSession.getProtocol());
-                System.out.println("\tCipher suite : "+sslSession.getCipherSuite());
+                System.out.println("\tProtocol : " + sslSession.getProtocol());
+                System.out.println("\tCipher suite : " + sslSession.getCipherSuite());
 
                 // Start handling application content
                 InputStream inputStream = sslSocket.getInputStream();
@@ -140,8 +140,8 @@ public class HTTPSServer {
                 PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(outputStream));
 
                 String line = null;
-                while((line = bufferedReader.readLine()) != null){
-                    System.out.println("Input : "+line);
+                while ((line = bufferedReader.readLine()) != null) {
+                    System.out.println("Input : " + line);
 
                     //all categories
                     if (line.trim().equals("1")) {
@@ -150,6 +150,7 @@ public class HTTPSServer {
                         for (Category c : categories) {
                             System.out.println(c);
                             printWriter.println(c.parseCategory());
+//                            printWriter.println(Tools.mySerialize(c));
                         }
                     }
 
@@ -173,6 +174,7 @@ public class HTTPSServer {
                         line = bufferedReader.readLine();
                         Category cat = sql.getCategory(line);
                         printWriter.println(cat.parseCategory());
+//                        printWriter.println(Tools.mySerialize(cat));
                     }
                     if (line.trim().equals("4")) {
                         line = bufferedReader.readLine();
@@ -181,10 +183,11 @@ public class HTTPSServer {
                     }
                     if (line.trim().equals("6")) {
                         line = bufferedReader.readLine();
-                        Integer id = Integer.parseInt(line.trim().split(",")[0]);
+                        System.out.println("RECEIVED: " + line);
+//                        Integer id = Integer.parseInt(line.trim().split(",")[0]);
                         String description = line.trim().split(",")[1];
                         String title = line.trim().split(",")[2];
-                        Category insCat = new Category(id, title, description);
+                        Category insCat = new Category(title, description);
                         try {
                             sql.insertCategory(insCat);
                             printWriter.println(1);
@@ -199,14 +202,15 @@ public class HTTPSServer {
                         String descCvc = line.trim().split(",")[1];
                         String itemTitle = line.trim().split(",")[2];
                         int id = sql.getCategoryId(itemTitle);
+                        if(nameCvc.equals("null")) nameCvc = null;
+                        if(descCvc.equals("null")) descCvc= null;
                         sql.updateCategory(id, nameCvc, descCvc);
                     }
                     if (line.trim().equals("8")) {
                         line = bufferedReader.readLine();
                         if (!sql.isLoginFree(line)) {
                             printWriter.println(0);
-                        }
-                        else {
+                        } else {
                             printWriter.println(1);
                         }
                     }

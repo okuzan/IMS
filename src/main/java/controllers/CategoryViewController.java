@@ -21,6 +21,7 @@ public class CategoryViewController implements Initializable {
     public Button updateBtn;
     public Button addBtn;
     private String itemTitle;
+    public Category category;
 
     public Label lblHeader;
 
@@ -34,9 +35,16 @@ public class CategoryViewController implements Initializable {
         updateBtn.setVisible(true);
         addBtn.setVisible(false);
         itemTitle = title;
-
         HTTPSClient httpsClient = new HTTPSClient(4, this, itemTitle);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        nameField.setPromptText(category.getTitle());
+        descArea.setPromptText(category.getDescription());
     }
+
 
     public void btnAddOnAction(ActionEvent actionEvent) throws InterruptedException {
         String name;
@@ -68,7 +76,7 @@ public class CategoryViewController implements Initializable {
         if (!nameField.getText().isEmpty()) name = nameField.getText();
         if (!descArea.getText().isEmpty()) desc = descArea.getText();
 
-        HTTPSClient httpsClient = new HTTPSClient(7, this, name, desc, itemTitle);
+        new HTTPSClient(7, this, name, desc, itemTitle);
         Stage stage = (Stage) descArea.getScene().getWindow();
         stage.close();
     }
