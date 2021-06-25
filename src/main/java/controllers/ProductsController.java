@@ -1,5 +1,6 @@
 package controllers;
 
+import https.HTTPSClient;
 import product.Product;
 import product.DBConnection;
 import product.SQLOperations;
@@ -21,6 +22,7 @@ import javafx.stage.StageStyle;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -42,7 +44,7 @@ public class ProductsController implements Initializable {
     public TextField minQField;
     public TextField maxQField;
     @FXML
-    private ComboBox<String> producerList;
+    public ComboBox<String> producerList;
     @FXML
     public TableView<Product> table;
     @FXML
@@ -69,28 +71,36 @@ public class ProductsController implements Initializable {
     public AnchorPane apCombobox;
 
     private SQLOperations sql;
+    public Integer selectedCategoryId;
+    public List<Product> filteredProducts = new ArrayList<>();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        Connection con = DBConnection.getConnection();
-        sql = new SQLOperations(con);
-        List<Product> products = sql.getAllProducts();
-        for (Product product : products) table.getItems().add(product);
-        List<String> producers = sql.getProducers();
-        for (String producer : producers) producerList.getItems().add(producer);
-        List<String> categories = sql.getCategory();
-        for (String category : categories) categoryList.getItems().add(category);
-        btnRefresh.fire();
+//        Connection con = DBConnection.getConnection();
+//        sql = new SQLOperations(con);
+//        List<Product> products = sql.getAllProducts();
+//        for (Product product : products) table.getItems().add(product);
+        new HTTPSClient(10, this);
+//        List<String> producers = sql.getProducersTitles();
+//        for (String producer : producers) producerList.getItems().add(producer);
+        new HTTPSClient(12, this);
+//        List<String> categories = sql.getCategories();
+//        for (String category : categories) categoryList.getItems().add(category);
+        new HTTPSClient(11, this);
+//        btnRefresh.fire();
     }
 
     @FXML
-    public void onEnter(ActionEvent ae) {
+    public void onEnter(ActionEvent ae) throws InterruptedException {
         table.getItems().clear();
         String input = tfSearch.getText();
         ProductFilter filter = new ProductFilter(null, input, null, null, null, null, null);
-        List<Product> products = sql.getByCriteria(filter);
-        for (Product product : products) table.getItems().add(product);
-
+//        List<Product> products = sql.getByCriteria(filter);
+//        for (Product product : products) table.getItems().add(product);
+        filteredProducts.clear();
+        new HTTPSClient(15, this, filter);
+        Thread.sleep(100);
+        for (Product product : filteredProducts) table.getItems().add(product);
     }
 
     @FXML
@@ -114,6 +124,7 @@ public class ProductsController implements Initializable {
     private void btnUpdateOnAction(ActionEvent event) {
         if (!table.getSelectionModel().isEmpty()) {
             String item = String.valueOf(table.getSelectionModel().getSelectedItem().getId());
+            System.out.println(table.getSelectionModel().getSelectedItem());
             viewSelected(Integer.parseInt(item));
         } else {
             System.out.println("EMPTY SELECTION");
@@ -131,7 +142,8 @@ public class ProductsController implements Initializable {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             String item = String.valueOf(table.getSelectionModel().getSelectedItem().getId());
             System.out.println("Product id" + item);
-            sql.deleteProduct(Integer.parseInt(item));
+//            sql.deleteProduct(Integer.parseInt(item));
+            new HTTPSClient(13, this, Integer.parseInt(item));
             btnRefreshOnAction(event);
         }
     }
@@ -159,6 +171,7 @@ public class ProductsController implements Initializable {
             Stage nStage = new Stage();
             nStage.setScene(scene);
             nStage.showAndWait();
+//            reloadTable();
             btnRefresh.fire();
         } catch (IOException e) {
             e.printStackTrace();
@@ -209,11 +222,9 @@ public class ProductsController implements Initializable {
 
 
     @FXML
-    private void btnRefreshOnAction(ActionEvent event) {
+    public void btnRefreshOnAction(ActionEvent event) {
         tfSearch.clear();
-        System.out.println(producerList.getValue());
         ProductFilter filter = new ProductFilter();
-
         String minPriceText = minPriceField.getText();
         if (!minPriceText.isEmpty()) {
             try {
@@ -267,17 +278,39 @@ public class ProductsController implements Initializable {
         String category = categoryList.getValue();
         if (category != null) {
             categoryList.getSelectionModel().clearSelection();
-            Integer id = sql.getCategoryId(category);
-            if (id != null) filter.setCategory(id);
+//            Integer id = sql.getCategoryId(category);
+            new HTTPSClient(14, this, category);
+            if (selectedCategoryId != null) filter.setCategory(selectedCategoryId);
         }
 
         table.getItems().clear();
-        List<Product> products = sql.getByCriteria(filter);
-        for (Product product : products) table.getItems().add(product);
-        double cost = calculateCost(products);
+        filteredProducts.clear();
+        new HTTPSClient(15, this, filter);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        for (Product product : filteredProducts) table.getItems().add(product);
+        double cost = calculateCost(filteredProducts);
         totalLabel.setText("Total: " + cost);
-    }
 
+//        List<Product> products = sql.getByCriteria(filter);
+    }
+    private void reloadTable(){
+        table.getItems().clear();
+        filteredProducts.clear();
+        new HTTPSClient(15, this);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        for (Product product : filteredProducts) table.getItems().add(product);
+        double cost = calculateCost(filteredProducts);
+        totalLabel.setText("Total: " + cost);
+
+    }
     private double calculateCost(List<Product> products) {
         double sum = 0.;
         for (Product product : products) sum += (product.getAmount() * product.getPrice());

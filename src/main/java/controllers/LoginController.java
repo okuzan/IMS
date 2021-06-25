@@ -61,11 +61,11 @@ public class LoginController implements Initializable {
         }
     }
 
-    public void pfUserNameOnHitEnter(ActionEvent actionEvent) {
+    public void pfUserNameOnHitEnter(ActionEvent actionEvent) throws InterruptedException {
         btnLogin(actionEvent);
     }
 
-    public void pfUserPassOnHitEnter(ActionEvent actionEvent) {
+    public void pfUserPassOnHitEnter(ActionEvent actionEvent) throws InterruptedException {
         btnLogin(actionEvent);
     }
 

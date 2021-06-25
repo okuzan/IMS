@@ -1,29 +1,20 @@
 package https;
 
-import controllers.CategoryController;
-import controllers.LoginController;
-//import jdk.jpackage.internal.Log;
+import controllers.*;
+import javafx.scene.control.Alert;
 import product.Category;
+import product.Product;
+import product.ProductFilter;
+import product.Tools;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import javax.net.ssl.*;
+import java.io.*;
 import java.security.KeyStore;
 
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
+import static controllers.ProductsController.showAlert;
 
 public class HTTPSClient {
+
     private String host = "127.0.0.1";
     private int port = 9999;
 
@@ -36,15 +27,92 @@ public class HTTPSClient {
     public LoginController lc;
     public boolean checkLc = false;
 
-    public static void main(String[] args){
+    // ProductsController
+    private ProductsController pc;
+    private ProductFilter filter;
+    private int idToDelete;
+    private String categoryTitle;
+
+    //ProductView
+    private ProductViewController pvc;
+    private Integer idToGet;
+    private Product updProduct;
+
+    //orderController
+    private OrderController oc;
+    public int prodId;
+
+    public HTTPSClient(int i, ProductsController productsController, int id) {
+        this.query = i;
+        this.pc = productsController;
+        this.idToDelete = id;
+        run();
+    }
+
+    public HTTPSClient(int i, ProductsController pc, String category) {
+        this.query = i;
+        this.pc = pc;
+        this.categoryTitle = category;
+        run();
+    }
+
+    public HTTPSClient(int i, ProductViewController pc, String category) {
+        this.query = i;
+        this.pvc = pc;
+        this.categoryTitle = category;
+        run();
+    }
+
+    public HTTPSClient(int i, ProductsController productsController, ProductFilter filter) {
+        this.query = i;
+        this.pc = productsController;
+        this.filter = filter;
+        run();
+    }
+
+    public HTTPSClient(int i, ProductViewController productViewController) {
+        this.query = i;
+        this.pvc = productViewController;
+        run();
+    }
+
+    public HTTPSClient(int i, ProductViewController productViewController, Integer itemId) {
+        this.query = i;
+        this.pvc = productViewController;
+        this.idToGet = itemId;
+        run();
+    }
+
+    public HTTPSClient(int i, ProductViewController productViewController, Product p) {
+        this.query = i;
+        this.pvc = productViewController;
+        this.updProduct = p;
+        run();
+    }
+
+    public HTTPSClient(int i, OrderController orderController, int prodId) {
+        this.query = i;
+        this.prodId = prodId;
+        this.oc = orderController;
+        run();
+    }
+
+    public HTTPSClient(int i, OrderController orderController, Product p) {
+        this.query = i;
+        this.oc = orderController;
+        this.updProduct = p;
+        run();
+    }
+
+    public static void main(String[] args) {
         HTTPSClient client = new HTTPSClient();
         client.run();
     }
 
-    HTTPSClient(){
+    public HTTPSClient() {
     }
 
-    HTTPSClient(String host, int port){
+    HTTPSClient(String host, int port) {
         this.host = host;
         this.port = port;
     }
@@ -63,58 +131,19 @@ public class HTTPSClient {
         this.run();
     }
 
+    //ProductsController fetch all products
+    public HTTPSClient(int query, ProductsController pc) {
+        this.query = query;
+        this.pc = pc;
+        this.run();
+    }
+
     // LoginController
     public HTTPSClient(int query, LoginController lc) {
         this.query = query;
         this.lc = lc;
         this.checkLc = false;
         this.run();
-    }
-
-    // Create the and initialize the SSLContext
-    private SSLContext createSSLContext(){
-        try{
-            KeyStore keyStore = KeyStore.getInstance("JKS");
-            keyStore.load(new FileInputStream("testkey.jks"),"password".toCharArray());
-
-            // Create key manager
-            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
-            keyManagerFactory.init(keyStore, "password".toCharArray());
-            KeyManager[] km = keyManagerFactory.getKeyManagers();
-
-            // Create trust manager
-            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance("SunX509");
-            trustManagerFactory.init(keyStore);
-            TrustManager[] tm = trustManagerFactory.getTrustManagers();
-
-            // Initialize SSLContext
-            SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(km,  tm, null);
-
-            return sslContext;
-        } catch (Exception ex){
-            ex.printStackTrace();
-        }
-
-        return null;
-    }
-
-    // Start to run the server
-    public void run(){
-        SSLContext sslContext = this.createSSLContext();
-
-        try{
-            // Create socket factory
-            SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
-
-            // Create socket
-            SSLSocket sslSocket = (SSLSocket) sslSocketFactory.createSocket(this.host, this.port);
-
-            System.out.println("SSL client started");
-            new ClientThread(sslSocket, query, cc, item, lc, checkLc).start();
-        } catch (Exception ex){
-            ex.printStackTrace();
-        }
     }
 
     // Thread handling the socket to server
@@ -130,8 +159,12 @@ public class HTTPSClient {
         private LoginController lc;
         public boolean checkLc;
 
-        ClientThread(SSLSocket sslSocket, int query, CategoryController cc, Integer item, LoginController lc, boolean checkLc){
+        //ProductsContoller
+        private ProductsController pc;
+
+        ClientThread(SSLSocket sslSocket, int query, CategoryController cc, Integer item, LoginController lc, ProductsController pc, Integer idToDelete, String categoryTitle, ProductViewController pvc, Integer idToGet, Product p, boolean checkLc) {
             this.sslSocket = sslSocket;
+            this.pc = pc;
             this.query = query;
             this.cc = cc;
             this.item = item;
@@ -139,10 +172,10 @@ public class HTTPSClient {
             this.checkLc = checkLc;
         }
 
-        public void run(){
+        public void run() {
             sslSocket.setEnabledCipherSuites(sslSocket.getSupportedCipherSuites());
 
-            try{
+            try {
                 // Start handshake
                 sslSocket.startHandshake();
 
@@ -150,8 +183,8 @@ public class HTTPSClient {
                 SSLSession sslSession = sslSocket.getSession();
 
                 System.out.println("SSLSession :");
-                System.out.println("\tProtocol : "+sslSession.getProtocol());
-                System.out.println("\tCipher suite : "+sslSession.getCipherSuite());
+                System.out.println("\tProtocol : " + sslSession.getProtocol());
+                System.out.println("\tCipher suite : " + sslSession.getCipherSuite());
 
                 // Start handling application content
                 InputStream inputStream = sslSocket.getInputStream();
@@ -168,41 +201,127 @@ public class HTTPSClient {
                 if (this.query == 5) {
                     printWriter.println(lc.usernameField.getText() + "," + lc.passField.getText());
                 }
+                if (this.query == 13) {
+                    printWriter.println(idToDelete);
+                }
+                if (this.query == 14) {
+                    printWriter.println(categoryTitle);
+                }
+                if (this.query == 15) {
+                    this.pc.filteredProducts.clear();
+                    printWriter.println(Tools.mySerialize(filter));
+                }
+                if (this.query == 17) {
+                    printWriter.println(idToGet);
+                }
+                if (this.query == 18 || this.query == 19) {
+                    System.out.println("SENDING TO SERVER (update):");
+                    System.out.println(updProduct);
+                    printWriter.println(Tools.mySerialize(updProduct));
+                }
+                if (this.query == 20) {
+                    printWriter.println(prodId);
+                }
                 printWriter.println();
                 printWriter.flush();
 
-                String line = null;
-                while((line = bufferedReader.readLine()) != null){
-                    System.out.println("Input : "+line.trim());
-                    if(line.trim().isEmpty()){
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    System.out.println("Input : " + line.trim());
+                    if (line.trim().isEmpty()) {
                         //System.out.println("HERE");
                         break;
                     }
                     if (query == 1) {
-                        Integer id = Integer.parseInt(line.trim().split(",")[0]);
-                        String description = line.trim().split(",")[1];
-                        String title = line.trim().split(",")[2];
-                        cc.table.getItems().add(new Category(id, title, description));
+                        if (cc != null) {
+                            cc.table.getItems().add((Category) Tools.myDeserialize(line.trim()));
+                        } else if (pc != null) {
+
+                        }
                     }
                     if (query == 5) {
                         if (line.trim().equals("1")) {
-                            //this.checkLc = true;
                             HTTPSClient.this.checkLc = true;
                             System.out.println("OKAY");
-                        }
-                        else {
-                            System.out.println("NOT OKAY");
+                        } else {
                             HTTPSClient.this.checkLc = false;
-                            //this.checkLc = false;
+                            System.out.println("NOT OKAY");
                         }
                     }
+                    //get all products
+                    if (query == 10) pc.table.getItems().add(Product.fromFormat(line.trim()));
+                    if (query == 11) pc.categoryList.getItems().add(line.trim());
+                    if (query == 12) pc.producerList.getItems().add(line.trim());
+                    if (query == 13) {
+                        int res = Integer.parseInt(line.trim());
+//                        if (res == 0) {
+//                            showAlert(Alert.AlertType.ERROR, "DB error", "Can't delete product!");
+//                        } else if (res == 1) {
+//                            showAlert(Alert.AlertType.CONFIRMATION, "DB operation success", "Product deleted!");
+//                        }
+                    }
+                    if (query == 14) {
+                        if (pc != null) pc.selectedCategoryId = Integer.parseInt(line.trim());
+                        else if (pvc != null) pvc.categoryId = Integer.parseInt(line.trim());
+                    }
+                    if (query == 15) {
+//                        System.out.println(Tools.myDeserialize(line));
+                        pc.filteredProducts.add((Product) Tools.myDeserialize(line));
+                    }
+                    if (query == 16) pvc.categoryBox.getItems().add(line.trim());
+                    if (query == 17) pvc.product = Product.fromFormat(line.trim());
+                    if (query == 20) oc.amount = Product.fromFormat(line.trim()).getAmount();
                 }
-
-                //System.out.println("here");
                 sslSocket.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
     }
+
+    // Create the and initialize the SSLContext
+    private SSLContext createSSLContext() {
+        try {
+            KeyStore keyStore = KeyStore.getInstance("JKS");
+            keyStore.load(new FileInputStream("mykey.jks"), "password".toCharArray());
+
+            // Create key manager
+            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
+            keyManagerFactory.init(keyStore, "password".toCharArray());
+            KeyManager[] km = keyManagerFactory.getKeyManagers();
+
+            // Create trust manager
+            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance("SunX509");
+            trustManagerFactory.init(keyStore);
+            TrustManager[] tm = trustManagerFactory.getTrustManagers();
+
+            // Initialize SSLContext
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(km, tm, null);
+
+            return sslContext;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return null;
+    }
+
+    // Start to run the server
+    public void run() {
+        SSLContext sslContext = this.createSSLContext();
+        try {
+            // Create socket factory
+            SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+            // Create socket
+            SSLSocket sslSocket = (SSLSocket) sslSocketFactory.createSocket(this.host, this.port);
+
+            System.out.println("SSL client started");
+            new ClientThread(sslSocket, query, cc, item, lc, pc, idToDelete, categoryTitle, pvc, idToGet, updProduct, checkLc).start();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+
 }

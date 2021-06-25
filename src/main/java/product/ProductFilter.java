@@ -1,6 +1,8 @@
 package product;
 
-public class ProductFilter {
+import java.io.Serializable;
+
+public class ProductFilter implements Serializable {
     private Integer category;
     private String name;
     private String producer;
@@ -8,6 +10,10 @@ public class ProductFilter {
     private Double maxPrice;
     private Double minAmount;
     private Double maxAmount;
+
+    public String toFormat() {
+        return category + "," + name + "," + producer + "," + minPrice + "," + maxPrice + "," + minAmount + "," + maxAmount;
+    }
 
     public ProductFilter() {
     }
@@ -76,5 +82,18 @@ public class ProductFilter {
 
     public void setMaxAmount(Double maxAmount) {
         this.maxAmount = maxAmount;
+    }
+
+    @Override
+    public String toString() {
+        return "ProductFilter{" +
+                "category=" + category +
+                ", name='" + name + '\'' +
+                ", producer='" + producer + '\'' +
+                ", minPrice=" + minPrice +
+                ", maxPrice=" + maxPrice +
+                ", minAmount=" + minAmount +
+                ", maxAmount=" + maxAmount +
+                '}';
     }
 }

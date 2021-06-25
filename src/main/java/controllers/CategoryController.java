@@ -2,7 +2,6 @@ package controllers;
 
 import https.HTTPSClient;
 import product.Category;
-import product.DBConnection;
 import product.SQLOperations;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,7 +18,6 @@ import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;

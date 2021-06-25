@@ -1,11 +1,13 @@
 package product;
 
-public class Category {
+import java.io.Serializable;
+
+public class Category implements Serializable {
     private String description;
     private String title;
     private Integer id;
 
-    public Category(final int id, String title, String description){
+    public Category(final int id, String title, String description) {
         this.id = id;
         this.description = description;
         this.title = title;
@@ -40,10 +42,13 @@ public class Category {
         this.id = id;
     }
 
-    public String parseCategory() {
-        String str = new String();
-        str += id + "," + description + "," + title;
-        return str;
+    public String toFormat() {
+        return id + "," + description + "," + title;
+    }
+
+    public static Category fromFormat(String s) {
+        String[] splits = s.split(",");
+        return new Category(Integer.parseInt(splits[0]), splits[1], splits[2]);
     }
 
     @Override

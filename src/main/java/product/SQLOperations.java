@@ -364,6 +364,72 @@ public class SQLOperations {
         }
     }
 
+    public boolean updateProduct(Product p) {
+        try {
+//            if (p.getName() == null && p.getPrice() == null && amount == null && description == null && producer == null && groupId == null) {
+//            throw new RuntimeException("No new data in update!");
+//                System.out.println("NOTHING NEW");
+//                return false;
+//            }
+            StringBuilder sb = new StringBuilder();
+            sb.append("UPDATE warehouse SET ");
+            List<Object> values = new ArrayList<>();
+            if (p.getName() != null) {
+                sb.append(" name = ? ,");
+                values.add(p.getName());
+            }
+            if (p.getPrice() != null) {
+                sb.append(" price = ? ,");
+                values.add(p.getPrice());
+            }
+            if (p.getCategory() != null) {
+                sb.append(" category = ? ,");
+                values.add(p.getCategory());
+            }
+            if (p.getAmount() != null) {
+                sb.append(" amount = ? ,");
+                values.add(p.getAmount());
+            }
+            if (p.getDescription() != null) {
+                sb.append(" description = ? ,");
+                values.add(p.getDescription());
+            }
+            if (p.getProducer() != null) {
+                sb.append(" producer = ? ,");
+                values.add(p.getProducer());
+            }
+            sb.deleteCharAt(sb.length() - 1);
+            sb.append(" WHERE id = ?");
+            System.out.println(sb);
+
+            PreparedStatement statement = con.prepareStatement(sb.toString());
+            statement.setInt(1, p.getId());
+            int i = 1;
+            for (Object obj : values) {
+                System.out.println("name: " + obj.getClass().getName());
+                switch (obj.getClass().getName()) {
+                    case "java.lang.String":
+                        System.out.printf("i: %s, string\n", i);
+                        statement.setString(i++, (String) obj);
+                        break;
+                    case "java.lang.Double":
+                        System.out.printf("i: %s, double\n", i);
+                        statement.setDouble(i++, (Double) obj);
+                        break;
+                    case "java.lang.Integer":
+                        System.out.printf("i: %s, int\n", i);
+                        statement.setInt(i++, (Integer) obj);
+                        break;
+                }
+            }
+            statement.setInt(i, p.getId());
+            int exitCode = statement.executeUpdate();
+            return exitCode != 0;
+        } catch (SQLException e) {
+            throw new RuntimeException("Can't select all products!", e);
+        }
+    }
+
     public boolean checkData(Product product) {
         if (product.getAmount() != null)
             if (product.getAmount() < 0)
@@ -435,7 +501,7 @@ public class SQLOperations {
         }
     }
 
-    public List<String> getProducers() {
+    public List<String> getProducersTitles() {
         try (Statement st = con.createStatement();
              ResultSet res = st.executeQuery("SELECT DISTINCT producer FROM warehouse");
         ) {
@@ -450,7 +516,7 @@ public class SQLOperations {
         }
     }
 
-    public List<String> getCategory() {
+    public List<String> getCategoryTitles() {
         try (Statement st = con.createStatement();
              ResultSet res = st.executeQuery("SELECT title FROM categories");
         ) {

@@ -1,6 +1,8 @@
 package controllers;
 
+import https.HTTPSClient;
 import product.DBConnection;
+import product.Product;
 import product.SQLOperations;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
@@ -21,9 +23,10 @@ public class OrderController implements Initializable {
     public Button buyBtn;
     public Button sellBtn;
     private int prodId;
+    public Double amount;
 
     public Label lblHeader;
-    private SQLOperations sql;
+//    private SQLOperations sql;
 
     public void setId(int id) {
         prodId = id;
@@ -31,8 +34,8 @@ public class OrderController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Connection con = DBConnection.getConnection();
-        sql = new SQLOperations(con);
+//        Connection con = DBConnection.getConnection();
+//        sql = new SQLOperations(con);
     }
 
     public void reverseMode() {
@@ -44,8 +47,17 @@ public class OrderController implements Initializable {
     public void buyAction(ActionEvent actionEvent) {
         if (!qField.getText().isEmpty()) {
             double q = Double.parseDouble(qField.getText());
-            double newQ = sql.getProduct(prodId).getAmount() + q;
-            sql.updateProduct(prodId, null, null, null, null, newQ, null);
+            new HTTPSClient(20, this, prodId);
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+//            double newQ = sql.getProduct(prodId).getAmount() + q;
+            double newQ = amount + q;
+//            sql.updateProduct(prodId, null, null, null, null, newQ, null);
+            new HTTPSClient(18, this, new Product(prodId, null, null, null, null, newQ, null));
+
         }
         Stage stage = (Stage) qField.getScene().getWindow();
         stage.close();
@@ -55,9 +67,18 @@ public class OrderController implements Initializable {
     public void sellAction(ActionEvent actionEvent) {
         if (!qField.getText().isEmpty()) {
             double q = Double.parseDouble(qField.getText());
-            double newQ = sql.getProduct(prodId).getAmount() - q;
+            new HTTPSClient(20, this, prodId);
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            double newQ = amount - q;
+            System.out.println("NEWQ " + newQ);
             if (newQ >= 0) {
-                sql.updateProduct(prodId, null, null, null, null, newQ, null);
+                Product p = new Product(prodId, null, null, null, null, newQ, null);
+//                sql.updateProduct(prodId, null, null, null, null, newQ, null);
+                new HTTPSClient(18, this, p);
             } else {
                 showAlert(Alert.AlertType.ERROR, "Not enough products!", "You don't have enough products\nto proceed with the operation");
             }
