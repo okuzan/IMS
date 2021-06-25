@@ -1,8 +1,14 @@
 package https;
 
+import controllers.CategoryController;
+import controllers.CategoryViewController;
+import controllers.LoginController;
+//import jdk.jpackage.internal.Log;
+import controllers.RegistrationController;
 import controllers.*;
 import javafx.scene.control.Alert;
 import product.Category;
+import product.User;
 import product.Product;
 import product.ProductFilter;
 import product.Tools;
@@ -22,6 +28,20 @@ public class HTTPSClient {
     private int query = 0;
     private CategoryController cc;
     private Integer item;
+    private String search;
+
+    // CategoryViewController
+    private CategoryViewController cvc;
+    public Category category;
+    public boolean checkCvc = false;
+    private String nameCvc;
+    private String descCvc;
+    private String itemTitle;
+
+    // RegistrationController
+    private String loginRc;
+    public boolean checkRc = false;
+    private User userRc;
 
     // LoginController
     public LoginController lc;
@@ -112,7 +132,7 @@ public class HTTPSClient {
     public HTTPSClient() {
     }
 
-    HTTPSClient(String host, int port) {
+    HTTPSClient(String host, int port){
         this.host = host;
         this.port = port;
     }
@@ -128,6 +148,54 @@ public class HTTPSClient {
     public HTTPSClient(int query, Integer item) {
         this.query = query;
         this.item = item;
+        this.run();
+    }
+
+    // CategoryController getCategory
+    public HTTPSClient(int query, CategoryController cc, String search) {
+        this.query = query;
+        this.item = item;
+        this.search = search;
+        this.run();
+    }
+
+    // CategoryViewController getCategory(4)
+    public HTTPSClient(int query, CategoryViewController cvc, String search) {
+        this.query = query;
+        this.cvc = cvc;
+        this.search = search;
+        this.run();
+    }
+
+    // CategoryViewController insertCategory(6)
+    public HTTPSClient(int query, CategoryViewController cvc, Category category) {
+        this.query = query;
+        this.cvc = cvc;
+        this.category = category;
+        this.run();
+    }
+
+    // CategoryViewController updateCategory(7)
+    public HTTPSClient(int query, CategoryViewController cvc, String nameCvc, String descCvc, String itemTitle) {
+        this.query = query;
+        this.cvc = cvc;
+        this.nameCvc = nameCvc;
+        this.descCvc = descCvc;
+        this.itemTitle = itemTitle;
+        this.run();
+    }
+
+    // RegistrationController login (8)
+    public HTTPSClient(int query, String loginRc) {
+        this.query = query;
+        this.loginRc = loginRc;
+        this.run();
+    }
+
+    // RegistrationController insertUser (9)
+    public HTTPSClient(int query, User userRc) {
+        this.query = query;
+        this.userRc = userRc;
         this.run();
     }
 
@@ -154,6 +222,19 @@ public class HTTPSClient {
         private int query = 0;
         private CategoryController cc;
         private Integer item;
+        private String search;
+
+        // CategoryViewController
+        private CategoryViewController cvc;
+        public Category category;
+        public boolean checkCvc;
+        private String nameCvc;
+        private String descCvc;
+        private String itemTitle;
+
+        // RegistraionController
+        private String loginRc;
+        private User userRc;
 
         // LoginController
         private LoginController lc;
@@ -163,11 +244,31 @@ public class HTTPSClient {
         private ProductsController pc;
 
         ClientThread(SSLSocket sslSocket, int query, CategoryController cc, Integer item, LoginController lc, ProductsController pc, Integer idToDelete, String categoryTitle, ProductViewController pvc, Integer idToGet, Product p, boolean checkLc) {
+        ClientThread(SSLSocket sslSocket, int query, CategoryController cc, Integer item, LoginController lc,
+                     boolean checkLc, String search, CategoryViewController cvc, Category category, boolean checkCvc,
+                     String nameCvc, String descCvc, String itemTitle, String loginRc, User userRc){
             this.sslSocket = sslSocket;
             this.pc = pc;
+
+            // CategoryController
             this.query = query;
             this.cc = cc;
             this.item = item;
+            this.search = search;
+
+            // CategoryViewController
+            this.cvc = cvc;
+            this.category = category;
+            this.checkCvc = checkCvc;
+            this.nameCvc = nameCvc;
+            this.descCvc = descCvc;
+            this.itemTitle = itemTitle;
+
+            // RegistrationController
+            this.loginRc = loginRc;
+            this.userRc = userRc;
+
+            // LoginController
             this.lc = lc;
             this.checkLc = checkLc;
         }
@@ -201,6 +302,24 @@ public class HTTPSClient {
                 if (this.query == 5) {
                     printWriter.println(lc.usernameField.getText() + "," + lc.passField.getText());
                 }
+                if (this.query == 3) {
+                    printWriter.println(search);
+                }
+                if (this.query == 4) {
+                    printWriter.println(search);
+                }
+                if (this.query == 6) {
+                    printWriter.println(category.parseCategory());
+                }
+                if (this.query == 7) {
+                    printWriter.println(nameCvc + "," + descCvc + "," + itemTitle);
+                }
+                if (this.query == 8) {
+                    printWriter.println(loginRc);
+                }
+                if (this.query == 9) {
+                    printWriter.println(userRc.getLogin() + "," + userRc.getPassword());
+                }
                 if (this.query == 13) {
                     printWriter.println(idToDelete);
                 }
@@ -232,12 +351,11 @@ public class HTTPSClient {
                         //System.out.println("HERE");
                         break;
                     }
-                    if (query == 1) {
-                        if (cc != null) {
-                            cc.table.getItems().add((Category) Tools.myDeserialize(line.trim()));
-                        } else if (pc != null) {
-
-                        }
+                    if (query == 1 || query == 3) {
+                        Integer id = Integer.parseInt(line.trim().split(",")[0]);
+                        String description = line.trim().split(",")[1];
+                        String title = line.trim().split(",")[2];
+                        cc.table.getItems().add(new Category(id, title, description));
                     }
                     if (query == 5) {
                         if (line.trim().equals("1")) {
@@ -271,6 +389,33 @@ public class HTTPSClient {
                     if (query == 16) pvc.categoryBox.getItems().add(line.trim());
                     if (query == 17) pvc.product = Product.fromFormat(line.trim());
                     if (query == 20) oc.amount = Product.fromFormat(line.trim()).getAmount();
+                    if (query == 4) {
+                        Integer id = Integer.parseInt(line.trim().split(",")[0]);
+                        String description = line.trim().split(",")[1];
+                        String title = line.trim().split(",")[2];
+                        cvc.nameField.setPromptText(title);
+                        cvc.descArea.setPromptText(description);
+                    }
+                    if (query == 6) {
+                        if (line.trim().equals("1")) {
+                            HTTPSClient.this.checkCvc = true;
+                            System.out.println("OKAY");
+                        }
+                        else {
+                            System.out.println("NOT OKAY");
+                            HTTPSClient.this.checkCvc = false;
+                        }
+                    }
+                    if (query == 8) {
+                        if (line.trim().equals("1")) {
+                            System.out.println("NORM");
+                            HTTPSClient.this.checkRc = true;
+                        }
+                        else {
+                            System.out.println("NOT NORM");
+                            HTTPSClient.this.checkRc = false;
+                        }
+                    }
                 }
                 sslSocket.close();
             } catch (Exception ex) {

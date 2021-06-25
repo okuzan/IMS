@@ -2,3 +2,6 @@
 /target/
 .idea
 IMS.iml
+pom.xml
+testkey.jks
+mykey.jks

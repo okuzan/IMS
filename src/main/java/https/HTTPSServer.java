@@ -1,5 +1,10 @@
 package https;
 
+import javafx.scene.control.Alert;
+import product.Category;
+import product.DBConnection;
+import product.SQLOperations;
+import product.User;
 import product.*;
 
 import java.io.BufferedReader;
@@ -9,6 +14,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
 import java.sql.Connection;
 import java.util.List;
@@ -22,6 +28,11 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+
+import static controllers.ProductsController.showAlert;
 
 public class HTTPSServer {
 
@@ -118,8 +129,8 @@ public class HTTPSServer {
                 SSLSession sslSession = sslSocket.getSession();
 
                 System.out.println("SSLSession :");
-                System.out.println("\tProtocol : " + sslSession.getProtocol());
-                System.out.println("\tCipher suite : " + sslSession.getCipherSuite());
+                System.out.println("\tProtocol : "+sslSession.getProtocol());
+                System.out.println("\tCipher suite : "+sslSession.getCipherSuite());
 
                 // Start handling application content
                 InputStream inputStream = sslSocket.getInputStream();
@@ -128,9 +139,9 @@ public class HTTPSServer {
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
                 PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(outputStream));
 
-                String line;
-                while ((line = bufferedReader.readLine()) != null) {
-                    System.out.println("Input : " + line);
+                String line = null;
+                while((line = bufferedReader.readLine()) != null){
+                    System.out.println("Input : "+line);
 
                     //all categories
                     if (line.trim().equals("1")) {
@@ -138,7 +149,7 @@ public class HTTPSServer {
                         List<Category> categories = this.sql.showCategories();
                         for (Category c : categories) {
                             System.out.println(c);
-                            printWriter.println(Tools.mySerialize(c));
+                            printWriter.println(c.parseCategory());
                         }
                     }
 
@@ -157,6 +168,54 @@ public class HTTPSServer {
                         } else {
                             printWriter.println(0);
                         }
+                    }
+                    if (line.trim().equals("3")) {
+                        line = bufferedReader.readLine();
+                        Category cat = sql.getCategory(line);
+                        printWriter.println(cat.parseCategory());
+                    }
+                    if (line.trim().equals("4")) {
+                        line = bufferedReader.readLine();
+                        Category cat = sql.getCategory(line);
+                        printWriter.println(cat.parseCategory());
+                    }
+                    if (line.trim().equals("6")) {
+                        line = bufferedReader.readLine();
+                        Integer id = Integer.parseInt(line.trim().split(",")[0]);
+                        String description = line.trim().split(",")[1];
+                        String title = line.trim().split(",")[2];
+                        Category insCat = new Category(id, title, description);
+                        try {
+                            sql.insertCategory(insCat);
+                            printWriter.println(1);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            printWriter.println(0);
+                        }
+                    }
+                    if (line.trim().equals("7")) {
+                        line = bufferedReader.readLine();
+                        String nameCvc = line.trim().split(",")[0];
+                        String descCvc = line.trim().split(",")[1];
+                        String itemTitle = line.trim().split(",")[2];
+                        int id = sql.getCategoryId(itemTitle);
+                        sql.updateCategory(id, nameCvc, descCvc);
+                    }
+                    if (line.trim().equals("8")) {
+                        line = bufferedReader.readLine();
+                        if (!sql.isLoginFree(line)) {
+                            printWriter.println(0);
+                        }
+                        else {
+                            printWriter.println(1);
+                        }
+                    }
+                    if (line.trim().equals("9")) {
+                        line = bufferedReader.readLine();
+                        String login = line.trim().split(",")[0];
+                        String password = line.trim().split(",")[1];
+                        System.out.println("userInsert: " + login + " " + password);
+                        sql.insertUser(new User(login, password));
                     }
                     //fetch all products
                     if (line.trim().equals("10")) {

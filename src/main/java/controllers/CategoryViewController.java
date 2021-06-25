@@ -1,5 +1,6 @@
 package controllers;
 
+import https.HTTPSClient;
 import product.Category;
 import product.DBConnection;
 import product.SQLOperations;
@@ -22,13 +23,10 @@ public class CategoryViewController implements Initializable {
     private String itemTitle;
 
     public Label lblHeader;
-    private SQLOperations sql;
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Connection con = DBConnection.getConnection();
-        sql = new SQLOperations(con);
+
     }
 
     public void updateMode(String title) {
@@ -37,12 +35,10 @@ public class CategoryViewController implements Initializable {
         addBtn.setVisible(false);
         itemTitle = title;
 
-        Category category = sql.getCategory(itemTitle);
-        nameField.setPromptText(category.getTitle());
-        descArea.setPromptText(category.getDescription());
+        HTTPSClient httpsClient = new HTTPSClient(4, this, itemTitle);
     }
 
-    public void btnAddOnAction(ActionEvent actionEvent) {
+    public void btnAddOnAction(ActionEvent actionEvent) throws InterruptedException {
         String name;
         String desc;
         if (nameField.getText().isEmpty()) {
@@ -54,10 +50,9 @@ public class CategoryViewController implements Initializable {
         desc = descArea.getText();
 
         Category category = new Category(name, desc);
-        try {
-            sql.insertCategory(category);
-        } catch (Exception e) {
-            e.printStackTrace();
+        HTTPSClient httpsClient = new HTTPSClient(6, this, category);
+        Thread.sleep(500);
+        if (!httpsClient.checkCvc) {
             showAlert(Alert.AlertType.ERROR, "Illegal input", "Your name was used before?");
         }
 
@@ -72,8 +67,8 @@ public class CategoryViewController implements Initializable {
 
         if (!nameField.getText().isEmpty()) name = nameField.getText();
         if (!descArea.getText().isEmpty()) desc = descArea.getText();
-        int id = sql.getCategoryId(itemTitle);
-        sql.updateCategory(id, name, desc);
+
+        HTTPSClient httpsClient = new HTTPSClient(7, this, name, desc, itemTitle);
         Stage stage = (Stage) descArea.getScene().getWindow();
         stage.close();
     }

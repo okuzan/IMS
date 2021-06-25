@@ -31,7 +31,7 @@ public class LoginController implements Initializable {
         String pass = passField.getText();
         String login = usernameField.getText();
         HTTPSClient httpsClient = new HTTPSClient(5, this);
-        Thread.sleep(1000);
+        Thread.sleep(500);
         System.out.println(httpsClient.checkLc);
         if (httpsClient.checkLc) {
             try {
